@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+  <persistence-unit name="com.mycompany_DataLayerZooba_jar_1.0-SNAPSHOTPU" transaction-type="RESOURCE_LOCAL">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <class>pojo.ServiceProviderServices</class>
+    <class>pojo.Year</class>
+    <class>pojo.ModelFeaturesValues</class>
+    <class>pojo.Coordinates</class>
+    <class>pojo.ServiceProviderPhone</class>
+    <class>pojo.Type</class>
+    <class>pojo.TrackingData</class>
+    <class>pojo.Service</class>
+    <class>pojo.Address</class>
+    <class>pojo.ServiceProvider</class>
+    <class>pojo.ServiceProviderCalendar</class>
+    <class>pojo.Trips</class>
+    <class>pojo.MeasuringUnit</class>
+    <class>pojo.User</class>
+    <class>pojo.Vehicle</class>
+    <class>pojo.VehicleModel</class>
+    <class>pojo.Model</class>
+    <class>pojo.CarFeatures</class>
+    <class>pojo.Make</class>
+    <class>pojo.Device</class>
+    <class>pojo.Days</class>
+    <class>pojo.Trim</class>
+    <properties>
+      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/zooba_db?zeroDateTimeBehavior=convertToNull"/>
+      <property name="javax.persistence.jdbc.user" value="root"/>
+      <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
+      <property name="javax.persistence.jdbc.password" value="root"/>
+    </properties>
+  </persistence-unit>
+</persistence>

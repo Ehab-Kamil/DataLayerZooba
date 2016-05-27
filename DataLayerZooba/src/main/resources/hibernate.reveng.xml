@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-reverse-engineering PUBLIC "-//Hibernate/Hibernate Reverse Engineering DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-reverse-engineering-3.0.dtd">
+<hibernate-reverse-engineering>
+  <schema-selection match-catalog="zooba_db"/>
+  <table-filter match-name="make_service_providers"/>
+  <table-filter match-name="trim"/>
+  <table-filter match-name="model"/>
+  <table-filter match-name="service_provider_calendar"/>
+  <table-filter match-name="model_features"/>
+  <table-filter match-name="vehicle"/>
+  <table-filter match-name="measuring_unit"/>
+  <table-filter match-name="tracking_data"/>
+  <table-filter match-name="make"/>
+  <table-filter match-name="service_provider"/>
+  <table-filter match-name="address"/>
+  <table-filter match-name="user_vehicles"/>
+  <table-filter match-name="year"/>
+  <table-filter match-name="model_features_values"/>
+  <table-filter match-name="service_provider_services"/>
+  <table-filter match-name="type"/>
+  <table-filter match-name="coordinates"/>
+  <table-filter match-name="service_provider_phone"/>
+  <table-filter match-name="trips"/>
+  <table-filter match-name="vehicle_model"/>
+  <table-filter match-name="car_features"/>
+  <table-filter match-name="days"/>
+  <table-filter match-name="device"/>
+  <table-filter match-name="user"/>
+  <table-filter match-name="service"/>
+</hibernate-reverse-engineering>
