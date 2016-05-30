@@ -98,7 +98,8 @@ public abstract class AbstractDao<T> {
         List<T> objects = null;
         try {
             startOperation();
-            objects = session.createCriteria(t.getClass()).add(Example.create(t)).list();
+            
+            objects = session.createCriteria(t.getClass()).add(Example.create(t).excludeZeroes()).list();
 //            tx.commit();
         } catch (HibernateException e) {
             handleException(e);
