@@ -5,6 +5,7 @@
  */
 package facadePkg;
 
+import Exceptions.DataAccessLayerException;
 import dao.*;
 import pojo.*;
 
@@ -37,6 +38,9 @@ public class DataLayer {
     YearDao yearDao;
 
     public int insertVehicle(Make make, Model model, Year year, Trim trim) {
+        
+        int result =0;
+        try{
         makeDao = new MakeDao();
         modelDao = new ModelDao();
         yearDao = new YearDao();
@@ -58,8 +62,13 @@ public class DataLayer {
         yearDao.create(year);
         trimDao.create(trim);
         vehicleModelDao.create(vehicleModel);
-        
-        return 0;
+        result = 1;
+        }catch(DataAccessLayerException ex){
+        result = 0;
+        }
+        return result;
     }
 
+    
+    
 }
