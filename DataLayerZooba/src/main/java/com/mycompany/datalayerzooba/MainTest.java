@@ -12,6 +12,8 @@ import facadePkg.DataLayer;
 import pojo.Make;
 import pojo.Model;
 import pojo.Trim;
+import java.util.ArrayList;
+import pojo.Make;
 import pojo.User;
 import pojo.Year;
 
@@ -22,22 +24,5 @@ import pojo.Year;
 public class MainTest {
 
     public static void main(String[] args) {
-
-        Model model = new Model();
-        Make make = new Make();
-        Trim trim = new Trim();
-        Year year = new Year();
-
-        make.setName("qwe");
-        make.setNiceName("qwe");
-        model.setName("qwe");
-        model.setNiceName("ert");
-        year.setName(0);
-        trim.setName("trim name ");
-
-        DataLayer dataLayer = new DataLayer();
-        dataLayer.insertVehicle(make, model, year, trim);
-
     }
-
 }

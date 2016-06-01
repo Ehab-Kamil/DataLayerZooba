@@ -19,6 +19,11 @@ import pojo.Make;
  */
 public class MakeDao extends AbstractDao<Make> {
 
+
+    public List<Make> findAll() {
+        return super.findAll(Make.class); //To change body of generated methods, choose Tools | Templates.
+    }
+
     Session session;
 
     public MakeDao() 
