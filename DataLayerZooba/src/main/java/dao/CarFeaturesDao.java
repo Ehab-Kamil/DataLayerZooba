@@ -32,5 +32,37 @@ public class CarFeaturesDao extends AbstractDao<CarFeatures> {
  
     return lst;
     }
+
+    @Override
+    public List<CarFeatures> findByExample(CarFeatures t) {
+        return super.findByExample(t); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public List<CarFeatures> findAll(Class clazz) {
+        return super.findAll(clazz); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public CarFeatures find(Class clazz, Long id) {
+        return super.find(clazz, id); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void delete(CarFeatures t) {
+        super.delete(t); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void saveOrUpdate(CarFeatures t) {
+        super.saveOrUpdate(t); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void create(CarFeatures t) {
+        super.create(t); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    
     
 }
