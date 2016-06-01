@@ -5,27 +5,39 @@
  */
 package com.mycompany.datalayerzooba;
 
+import dao.MakeDao;
+import dao.ModelDao;
 import dao.UserDao;
+import facadePkg.DataLayer;
+import pojo.Make;
+import pojo.Model;
+import pojo.Trim;
 import pojo.User;
+import pojo.Year;
 
 /**
  *
  * @author Ehab
  */
 public class MainTest {
-    
-    
+
     public static void main(String[] args) {
-        
-        User u = new User();
-        u.setUsername("Ehab UserName");
-        u.setFirstName("Ehab Kamil");
-        u.setEmail("Ehab Email");
-        u.setPassword("Ehab Password");
-        
-        UserDao uDao = new UserDao();
-        uDao.create(u);
-        
+
+        Model model = new Model();
+        Make make = new Make();
+        Trim trim = new Trim();
+        Year year = new Year();
+
+        make.setName("qwe");
+        make.setNiceName("qwe");
+        model.setName("qwe");
+        model.setNiceName("ert");
+        year.setName(0);
+        trim.setName("trim name ");
+
+        DataLayer dataLayer = new DataLayer();
+        dataLayer.insertVehicle(make, model, year, trim);
+
     }
-    
+
 }

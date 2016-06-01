@@ -27,6 +27,33 @@ public class ModelFeatureValueDao extends AbstractDao<ModelFeaturesValues> {
         session = HibernateFactory.openSession();
     }
 
+    @Override
+    protected List<ModelFeaturesValues> findByExample(ModelFeaturesValues t) {
+        return super.findByExample(t); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    
+    protected ModelFeaturesValues find(Long id) {
+        return super.find(ModelFeaturesValues.class, id); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    protected void delete(ModelFeaturesValues t) {
+        super.delete(t); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    protected void saveOrUpdate(ModelFeaturesValues t) {
+        super.saveOrUpdate(t); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    protected void create(ModelFeaturesValues t) {
+        super.create(t); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    
+    
     public List<ModelFeaturesValues> getMFValuesByCarFeature(String carFeatureName) {
         Criteria crt = session.createCriteria(ModelFeaturesValues.class, "modelf").
                 createAlias("modelf.carFeatures", "carFeatures")

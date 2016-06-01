@@ -27,6 +27,30 @@ public class MakeDao extends AbstractDao<Make> {
         session = HibernateFactory.openSession();
     }
 
+    @Override
+    public List<Make> findByExample(Make t) {
+        return super.findByExample(t); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public Make find(Long id) {
+        return super.find(Make.class, id); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void delete(Make t) {
+        super.delete(t); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void saveOrUpdate(Make t) {
+        super.saveOrUpdate(t); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void create(Make t) {
+        super.create(t); //To change body of generated methods, choose Tools | Templates.
+    }
+
     public List<Make> getMakeByName(String name) {
         Criteria crt = session.createCriteria(Make.class).add(Restrictions.like("name", "%" + name + "%"));
         List<Make> lst = crt.list();
