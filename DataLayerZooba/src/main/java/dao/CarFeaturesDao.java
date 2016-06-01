@@ -63,6 +63,4 @@ public class CarFeaturesDao extends AbstractDao<CarFeatures> {
         super.create(t); //To change body of generated methods, choose Tools | Templates.
     }
     
-    
-    
 }
