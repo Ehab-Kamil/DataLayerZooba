@@ -13,24 +13,25 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import pojo.CarFeatures;
 
-
-
 /**
  *
  * @author yoka
  */
 public class CarFeaturesDao extends AbstractDao<CarFeatures> {
-     Session session;
+
+    Session session;
+
     public CarFeaturesDao() {
-     super(CarFeatures.class);
-        session=HibernateFactory.openSession();
+        super(CarFeatures.class);
+        session = HibernateFactory.openSession();
     }
-    public List<CarFeatures> getCarFeaturesByName(String name)
-    {
-     Criteria crt=session.createCriteria(CarFeatures.class).add(Restrictions.like("name", "%"+name+"%"));
-    List<CarFeatures> lst=crt.list();
- 
-    return lst;
+
+    public CarFeatures getCarFeaturesByName(String name) {
+       
+        Criteria crt = session.createCriteria(CarFeatures.class).add(Restrictions.like("name", "%" + name + "%"));
+        CarFeatures result = (CarFeatures) crt.uniqueResult();
+
+        return result;
     }
 
     @Override
@@ -38,14 +39,12 @@ public class CarFeaturesDao extends AbstractDao<CarFeatures> {
         return super.findByExample(t); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    public List<CarFeatures> findAll(Class clazz) {
-        return super.findAll(clazz); //To change body of generated methods, choose Tools | Templates.
+    public List<CarFeatures> findAll() {
+        return super.findAll(CarFeatures.class); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    public CarFeatures find(Class clazz, Long id) {
-        return super.find(clazz, id); //To change body of generated methods, choose Tools | Templates.
+    public CarFeatures find(Long id) {
+        return super.find(CarFeatures.class, id); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -62,5 +61,5 @@ public class CarFeaturesDao extends AbstractDao<CarFeatures> {
     public void create(CarFeatures t) {
         super.create(t); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
 }
