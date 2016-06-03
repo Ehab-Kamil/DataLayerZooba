@@ -50,6 +50,10 @@ public class YearDao extends AbstractDao<Year> {
         super.create(t); //To change body of generated methods, choose Tools | Templates.
     }
 
+    public List<Year> findAll() {
+        return super.findAll(Year.class); //To change body of generated methods, choose Tools | Templates.
+    }
+
     
     
     public List<Year> getYearByModel(String model) {

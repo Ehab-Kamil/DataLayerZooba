@@ -50,6 +50,14 @@ public class ModelDao extends AbstractDao<Model> {
         super.create(t); //To change body of generated methods, choose Tools | Templates.
     }
 
+    public List<Model> getModelByMakeAndName(String make, String part) {
+        Criteria crt = session.createCriteria(Model.class, "model").
+                createAlias("model.make", "make")
+                .add(Restrictions.like("make.name", make)).add(Restrictions.like("name", "%" + part + "%"));
+        List<Model> lst = crt.list();
+        return lst;
+    }
+
     public List<Model> getModelByName(String name) {
         Criteria crt = session.createCriteria(Model.class).add(Restrictions.like("name", "%" + name + "%"));
         List<Model> lst = crt.list();
