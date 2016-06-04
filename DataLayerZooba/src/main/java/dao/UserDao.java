@@ -1,4 +1,4 @@
- /*
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -23,13 +23,9 @@ public class UserDao extends AbstractDao<User> {
 
     Session session;
 
-    public UserDao() {
+    public UserDao(Session s) {
         super(User.class);
-    }
-
-    @Override
-    public void create(User u) throws DataAccessLayerException {
-        super.create(u);
+        session = s;
     }
 
     public List<User> findAll() throws DataAccessLayerException {
@@ -41,28 +37,18 @@ public class UserDao extends AbstractDao<User> {
     }
 
     @Override
-    public void delete(User t) throws DataAccessLayerException {
-        super.delete(t); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void saveOrUpdate(User t) throws DataAccessLayerException {
-        super.saveOrUpdate(t); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public List<User> findByExample(User t) throws DataAccessLayerException {
-       // return super.findByExample(t);
+        // return super.findByExample(t);
         List<User> objects = null;
         try {
             startOperation();
-           session= HibernateFactory.openSession();
-            
+            session = HibernateFactory.openSession();
+
             objects = session.createCriteria(t.getClass()).add(Example.create(t).excludeZeroes()).list();
             for (User object : objects) {
-               Hibernate.initialize(object.getDevices());
-            Hibernate.initialize(object.getVehicles());
-            Hibernate.initialize(object.getVehicles_1());   
+                Hibernate.initialize(object.getDevices());
+                Hibernate.initialize(object.getVehicles());
+                Hibernate.initialize(object.getVehicles_1());
             }
 //            tx.commit();
         } catch (HibernateException e) {

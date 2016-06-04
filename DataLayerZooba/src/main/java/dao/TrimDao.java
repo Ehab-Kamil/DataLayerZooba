@@ -27,6 +27,33 @@ public class TrimDao extends AbstractDao<Trim> {
         session = HibernateFactory.openSession();
     }
 
+    @Override
+    public List<Trim> findByExample(Trim t) {
+        return super.findByExample(t); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public Trim find(Long id) {
+        return super.find(Trim.class, id); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void delete(Trim t) {
+        super.delete(t); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void saveOrUpdate(Trim t) {
+        super.saveOrUpdate(t); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void create(Trim t) {
+        super.create(t); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    
+    
+
     public List<Trim> getTrimByName(String name) {
         Criteria crt = session.createCriteria(Trim.class).add(Restrictions.like("name", "%" + name + "%"));
         List<Trim> lst = crt.list();

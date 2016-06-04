@@ -72,8 +72,13 @@ public class Year  implements java.io.Serializable {
         this.vehicleModels = vehicleModels;
     }
 
+    @Override
+    public String toString() {
+        return name+"";
+    }
 
 
+    
 
 }
 

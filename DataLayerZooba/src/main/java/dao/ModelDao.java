@@ -26,7 +26,39 @@ public class ModelDao extends AbstractDao<Model> {
         session = HibernateFactory.openSession();
     }
 
-    public List<Model> getMakeByName(String name) {
+    @Override
+    public List<Model> findByExample(Model t) {
+        return super.findByExample(t); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public Model find(Long id) {
+        return super.find(Model.class, id); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void delete(Model t) {
+        super.delete(t); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void saveOrUpdate(Model t) {
+        super.saveOrUpdate(t); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void create(Model t) {
+        super.create(t); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public List<Model> getModelByMakeAndName(String make, String part) {
+        Criteria crt = session.createCriteria(Model.class, "model").
+                createAlias("model.make", "make")
+                .add(Restrictions.like("make.name", make)).add(Restrictions.like("name", "%" + part + "%"));
+        List<Model> lst = crt.list();
+        return lst;
+    }
+
+    public List<Model> getModelByName(String name) {
         Criteria crt = session.createCriteria(Model.class).add(Restrictions.like("name", "%" + name + "%"));
         List<Model> lst = crt.list();
 

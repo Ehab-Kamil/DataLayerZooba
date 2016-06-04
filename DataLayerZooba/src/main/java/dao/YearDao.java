@@ -26,6 +26,36 @@ public class YearDao extends AbstractDao<Year> {
         session = HibernateFactory.openSession();
     }
 
+    @Override
+    public List<Year> findByExample(Year t) {
+        return super.findByExample(t); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public Year find(Long id) {
+        return super.find(Year.class, id); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void delete(Year t) {
+        super.delete(t); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void saveOrUpdate(Year t) {
+        super.saveOrUpdate(t); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void create(Year t) {
+        super.create(t); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public List<Year> findAll() {
+        return super.findAll(Year.class); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    
+    
     public List<Year> getYearByModel(String model) {
         Criteria crt = session.createCriteria(Year.class, "year").
                 createAlias("year.vehicleModels", "vModel")
