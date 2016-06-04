@@ -33,7 +33,7 @@ public class CoordinatesDAO extends AbstractDao<Coordinates> {
         } catch (Throwable ex) {            
             System.err.println("Failed to create sessionFactory object." + ex);
             throw new ExceptionInInitializerError(ex);            
-        }
+    }
     }
     
     public ArrayList<Coordinates> getCoordinatesByTrip(Trips trip) {

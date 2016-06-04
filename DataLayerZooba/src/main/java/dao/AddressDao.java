@@ -7,6 +7,7 @@ package dao;
 
 import Exceptions.DataAccessLayerException;
 import abstractDao.AbstractDao;
+import abstractDao.HibernateFactory;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -23,16 +24,11 @@ import pojo.Address;
  */
 public class AddressDao extends AbstractDao<Address> {
 
-    private static SessionFactory factory;
+    Session session;
 
     public AddressDao() {
         super(Address.class);
-        try {
-            factory = new Configuration().configure().buildSessionFactory();
-        } catch (Throwable ex) {
-            System.err.println("Failed to create sessionFactory object." + ex);
-            throw new ExceptionInInitializerError(ex);
-        }
+        session = HibernateFactory.openSession();
     }
 
     public void create(Address a) throws DataAccessLayerException {
@@ -56,8 +52,6 @@ public class AddressDao extends AbstractDao<Address> {
     }
 
     public Address findByServiceprovider(String name) {
-        Session session = factory.openSession();
-        Transaction tx = null;
         String hql = "FROM Address A join A.serviceProvider S where A.id=S.address.id and S.name=?";
         Query query = session.createQuery(hql).setString(0, name);
         Address address = new Address();
@@ -70,8 +64,6 @@ public class AddressDao extends AbstractDao<Address> {
     }
 
     public List<Address> findAddressByCountry(String country) {
-        Session session = factory.openSession();
-        Transaction tx = null;
         List<Address> address = new ArrayList();
         String hql = "From Address A  where A.country=?";
         Query query = session.createQuery(hql).setString(0, country);
@@ -80,8 +72,6 @@ public class AddressDao extends AbstractDao<Address> {
     }
 
     public List<Address> findAddressByCity(String city) {
-        Session session = factory.openSession();
-        Transaction tx = null;
         List<Address> address = new ArrayList();
         String hql = "From Address A  where A.city=?";
         Query query = session.createQuery(hql).setString(0, city);
@@ -90,8 +80,6 @@ public class AddressDao extends AbstractDao<Address> {
     }
 
     public List<Address> findAddressByStreet(String street) {
-        Session session = factory.openSession();
-        Transaction tx = null;
         List<Address> address = new ArrayList();
         String hql = "From Address A  where A.street=?";
         Query query = session.createQuery(hql).setString(0, street);
@@ -100,8 +88,6 @@ public class AddressDao extends AbstractDao<Address> {
     }
 
     public List<Address> findAddressByLandmark(String landmark) {
-        Session session = factory.openSession();
-        Transaction tx = null;
         List<Address> address = new ArrayList();
         String hql = "From Address A  where A.landmark=?";
         Query query = session.createQuery(hql).setString(0, landmark);
@@ -110,8 +96,6 @@ public class AddressDao extends AbstractDao<Address> {
     }
 
     public Address findAddressByPostalcode(String postalcode) {
-        Session session = factory.openSession();
-        Transaction tx = null;
         Address address = new Address();
         String hql = "From Address A  where A.postalCode=?";
         Query query = session.createQuery(hql).setString(0, postalcode);

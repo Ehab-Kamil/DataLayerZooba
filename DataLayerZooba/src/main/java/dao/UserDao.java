@@ -23,13 +23,9 @@ public class UserDao extends AbstractDao<User> {
 
     Session session;
 
-    public UserDao() {
+    public UserDao(Session s) {
         super(User.class);
-    }
-
-    @Override
-    public void create(User u) throws DataAccessLayerException {
-        super.create(u);
+        session = s;
     }
 
     public List<User> findAll() throws DataAccessLayerException {
@@ -38,16 +34,6 @@ public class UserDao extends AbstractDao<User> {
 
     public User find(Long id) throws DataAccessLayerException {
         return super.find(User.class, id); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void delete(User t) throws DataAccessLayerException {
-        super.delete(t); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void saveOrUpdate(User t) throws DataAccessLayerException {
-        super.saveOrUpdate(t); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

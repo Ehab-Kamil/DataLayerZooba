@@ -6,6 +6,8 @@
 package abstractDao;
 
 import Exceptions.DataAccessLayerException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -21,7 +23,7 @@ import org.hibernate.cfg.Configuration;
 public class HibernateFactory {
 
     private static SessionFactory sessionFactory;
-//    private static Log log = LogFactory.getLog(HibernateFactory.class);
+    private static Log log = LogFactory.getLog(HibernateFactory.class);
 
     public static SessionFactory buildSessionFactory() throws HibernateException {
         if (sessionFactory != null) {
@@ -59,7 +61,7 @@ public class HibernateFactory {
             try {
                 sessionFactory.close();
             } catch (HibernateException ignored) {
-//                log.error("Couldn't close SessionFactory", ignored);
+                log.error("Couldn't close SessionFactory", ignored);
             }
         }
     }
@@ -69,7 +71,7 @@ public class HibernateFactory {
             try {
                 session.close();
             } catch (HibernateException ignored) {
-//                log.error("Couldn't close Session", ignored);
+                log.error("Couldn't close Session", ignored);
             }
         }
     }
@@ -80,7 +82,7 @@ public class HibernateFactory {
                 tx.rollback();
             }
         } catch (HibernateException ignored) {
-//            log.error("Couldn't rollback Transaction", ignored);
+            log.error("Couldn't rollback Transaction", ignored);
         }
     }
 

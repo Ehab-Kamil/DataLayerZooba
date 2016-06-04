@@ -32,7 +32,7 @@ public class MakeServiceProviderDAO {
 
         Criteria crit = session.createCriteria(Make.class);
 
-        List results = new ArrayList<ServiceProvider>();
+        List results = new ArrayList<>();
 
         results = crit.list();
 

@@ -29,7 +29,7 @@ public abstract class AbstractDao<T> {
         entity = t;
     }
 
-    protected void create(T t) {
+    public void create(T t) {
         try {
             startOperation();
             session.save(t);
@@ -41,7 +41,7 @@ public abstract class AbstractDao<T> {
         }
     }
 
-    protected void saveOrUpdate(T t) {
+    public void saveOrUpdate(T t) {
         try {
             startOperation();
             session.update(t);
@@ -53,7 +53,7 @@ public abstract class AbstractDao<T> {
         }
     }
 
-    protected void delete(T t) {
+    public void delete(T t) {
         try {
             startOperation();
             session.delete(t);
@@ -94,7 +94,7 @@ public abstract class AbstractDao<T> {
         return objects;
     }
 
-    protected List<T> findByExample(T t) {
+    public List<T> findByExample(T t) {
         List<T> objects = null;
         try {
             startOperation();
