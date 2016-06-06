@@ -5,13 +5,14 @@
  */
 package dao;
 
+import Exceptions.DataAccessLayerException;
 import abstractDao.AbstractDao;
-import java.util.Date;
+import abstractDao.HibernateFactory;
 import java.util.List;
+import org.hibernate.Hibernate;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import pojo.Service;
-import pojo.ServiceProvider;
+import org.hibernate.criterion.Example;
 import pojo.ServiceProviderServices;
 
 /**
@@ -20,52 +21,42 @@ import pojo.ServiceProviderServices;
  */
 public class ServiceProviderServicesDao extends AbstractDao<ServiceProviderServices> {
 
-    private final SessionFactory factory;
+      Session session;
 
-    public ServiceProviderServicesDao(SessionFactory factory) {
+    public ServiceProviderServicesDao(Session s) {
         super(ServiceProviderServices.class);
-        this.factory = factory;
+        session = s;
     }
 
-    public ServiceProviderServices getById(int id) {
-        Session session = factory.openSession();
-
-        ServiceProviderServices s = (ServiceProviderServices) session.createQuery("SELECT s FROM ServiceProviderServices s WHERE s.id = :id").setInteger("id", id).uniqueResult();
-        session.close();
-        return s;
+    public List<ServiceProviderServices> findAll() throws DataAccessLayerException {
+        return super.findAll(ServiceProviderServices.class); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public List<ServiceProviderServices> getByStartingHour(Date startingHour) {
-        Session session = factory.openSession();
-
-        List<ServiceProviderServices> list = session.createQuery("SELECT s FROM ServiceProviderServices s WHERE s.startingHour = :startingHour").setDate("startingHour", startingHour).list();
-        session.close();
-        return list;
+    public ServiceProviderServices find(Long id) throws DataAccessLayerException {
+        return super.find(ServiceProviderServices.class, id); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public List<ServiceProviderServices> getByEndingHour(Date endingHour) {
-        Session session = factory.openSession();
+    @Override
+    public List<ServiceProviderServices> findByExample(ServiceProviderServices t) throws DataAccessLayerException {
+        // return super.findByExample(t);
+        List<ServiceProviderServices> objects = null;
+        try {
+            startOperation();
+            session = HibernateFactory.openSession();
 
-        List<ServiceProviderServices> list = session.createQuery("SELECT s FROM ServiceProviderServices s WHERE s.endingHour = :endingHour").setDate("endingHour", endingHour).list();
-        session.close();
-        return list;
+            objects = session.createCriteria(t.getClass()).add(Example.create(t).excludeZeroes()).list();
+            for (ServiceProviderServices object : objects) {
+                Hibernate.initialize(object.getServiceProvider());
+                Hibernate.initialize(object.getService());
+                
+            }
+//            tx.commit();
+        } catch (HibernateException e) {
+            handleException(e);
+        } finally {
+            HibernateFactory.close(session);
+        }
+        return objects;
     }
 
-    public List<ServiceProviderServices> getByService(Service service) {
-        Session session = factory.openSession();
-
-        List<ServiceProviderServices> list =  session.createQuery("SELECT s FROM ServiceProviderServices s WHERE s.service.id = :id")
-                .setInteger("id", service.getId()).list();
-        session.close();
-        return list;
-    }
-
-    public List<ServiceProviderServices> getByServiceProvider(ServiceProvider serviceProvider) {
-        Session session = factory.openSession();
-
-        List<ServiceProviderServices> list =  session.createQuery("SELECT s FROM ServiceProviderServices s WHERE s.serviceProvider.id = :id")
-                .setInteger("id", serviceProvider.getId()).list();
-        session.close();
-        return list;
-    }
 }
