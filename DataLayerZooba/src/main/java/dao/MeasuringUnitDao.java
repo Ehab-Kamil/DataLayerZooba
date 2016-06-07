@@ -5,66 +5,58 @@
  */
 package dao;
 
+import Exceptions.DataAccessLayerException;
 import abstractDao.AbstractDao;
+import abstractDao.HibernateFactory;
+import java.util.List;
+import org.hibernate.Hibernate;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Example;
 import pojo.MeasuringUnit;
-import pojo.Type;
 
 /**
  *
  * @author Mohammed
  */
 public class MeasuringUnitDao extends AbstractDao<MeasuringUnit> {
-    
-    
-     private final SessionFactory factory;
 
-    public MeasuringUnitDao(SessionFactory factory) {
+    Session session;
+
+    public MeasuringUnitDao(Session s) {
         super(MeasuringUnit.class);
-        this.factory = factory;
-    }
-    
-     public MeasuringUnit getById(int id) {
-        Session session = factory.openSession();
-
-        MeasuringUnit m = (MeasuringUnit) session.createQuery("SELECT m FROM MeasuringUnit m WHERE m.id = :id").setInteger("id", id).uniqueResult();
-        session.close();
-        return m;
+        this.session = s;
     }
 
-   
-     public MeasuringUnit getByName(String name) {
-        Session session = factory.openSession();
-
-        MeasuringUnit m = (MeasuringUnit) session.createQuery("SELECT m FROM MeasuringUnit m WHERE m.name = :name").setString("name", name).uniqueResult();
-        session.close();
-        return m;
+    public List<MeasuringUnit> findAll() throws DataAccessLayerException{
+        return super.findAll(MeasuringUnit.class); //To change body of generated methods, choose Tools | Templates.
     }
 
-     public MeasuringUnit getByMeasuringUnitcol(String measuringUnitcol) {
-        Session session = factory.openSession();
-
-        MeasuringUnit m = (MeasuringUnit) session.createQuery("SELECT m FROM MeasuringUnit m WHERE m.measuringUnitcol = :measuringUnitcol").setString("measuringUnitcol", measuringUnitcol).uniqueResult();
-        session.close();
-        return m;
+    public MeasuringUnit find(Long id) throws DataAccessLayerException{
+        return super.find(MeasuringUnit.class, id); //To change body of generated methods, choose Tools | Templates.
     }
 
-       public MeasuringUnit getBytype(Type type) {
-        Session session = factory.openSession();
+    @Override
+    public List<MeasuringUnit> findByExample(MeasuringUnit t) throws DataAccessLayerException {
+        //    return super.findByExample(t); //To change body of generated methods, choose Tools | Templates.
 
-        MeasuringUnit m = (MeasuringUnit) session.createQuery("SELECT m FROM MeasuringUnit m , Type t WHERE t.id = :id and t.measuringUnit=m").setInteger("id", type.getId()).uniqueResult();
-        session.close();
-        return m;
+        List<MeasuringUnit> objects = null;
+        try {
+
+            startOperation();
+            session = HibernateFactory.openSession();
+            objects = session.createCriteria(t.getClass()).add(Example.create(t).excludeZeroes()).list();
+            for(MeasuringUnit m : objects){
+                Hibernate.initialize(m.getTypes());
+                
+            }
+        } catch (HibernateException e) {
+            handleException(e);
+        } finally {
+            HibernateFactory.close(session);
+        }
+        return objects;
     }
 
-            public MeasuringUnit getBySuffix(String suffix) {
-        Session session = factory.openSession();
 
-        MeasuringUnit m = (MeasuringUnit) session.createQuery("SELECT m FROM MeasuringUnit m WHERE m.suffix = :suffix").setString("suffix", suffix).uniqueResult();
-        session.close();
-        return m;
-    }
-
-       
 }

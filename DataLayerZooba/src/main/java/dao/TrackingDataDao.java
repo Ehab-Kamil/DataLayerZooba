@@ -5,12 +5,15 @@
  */
 package dao;
 
+import Exceptions.DataAccessLayerException;
 import abstractDao.AbstractDao;
+import abstractDao.HibernateFactory;
 import java.util.List;
+import org.hibernate.Hibernate;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Example;
 import pojo.TrackingData;
-import pojo.Vehicle;
 
 /**
  *
@@ -18,35 +21,42 @@ import pojo.Vehicle;
  */
 
 public class TrackingDataDao extends AbstractDao<TrackingData> {
-       private final SessionFactory factory;
+        Session session;
 
-    public TrackingDataDao(SessionFactory factory) {
+    public TrackingDataDao(Session s) {
         super(TrackingData.class);
-        this.factory = factory ;
+        session = s;
     }
 
-       public TrackingData getById(int id){
-        Session session=factory.openSession();
-        
-         TrackingData td = (TrackingData) session.createQuery("SELECT td FROM TrackingData td WHERE td.id = :id").setInteger("id", id).uniqueResult();
-         session.close();
-        return td;
+    public List<TrackingData> findAll() throws DataAccessLayerException {
+        return super.findAll(TrackingData.class); //To change body of generated methods, choose Tools | Templates.
     }
-    
-       public TrackingData getByintialOdemeter(int intialOdemeter){
-        Session session=factory.openSession();
-        
-         TrackingData td = (TrackingData) session.createQuery("SELECT td FROM TrackingData td WHERE td.intialOdemeter = :intialOdemeter").setInteger("intialOdemeter", intialOdemeter).uniqueResult();
-         session.close();
-        return td;
+
+    public TrackingData find(Long id) throws DataAccessLayerException {
+        return super.find(TrackingData.class, id); //To change body of generated methods, choose Tools | Templates.
     }
-     
-       public List<TrackingData> getByVehicle(Vehicle vehicle){
-        Session session=factory.openSession();
-        
-           List<TrackingData> list =  session.createQuery("SELECT td FROM TrackingData td ,Vehicle v WHERE td.vehicle.id = :id").setInteger("id", vehicle.getId()).list();
-         session.close();
-        return list;
+
+    @Override
+    public List<TrackingData> findByExample(TrackingData t) throws DataAccessLayerException {
+        // return super.findByExample(t);
+        List<TrackingData> objects = null;
+        try {
+            startOperation();
+            session = HibernateFactory.openSession();
+
+            objects = session.createCriteria(t.getClass()).add(Example.create(t).excludeZeroes()).list();
+            for (TrackingData object : objects) {
+                Hibernate.initialize(object.getType());
+                Hibernate.initialize(object.getVehicle());
+                
+            }
+//            tx.commit();
+        } catch (HibernateException e) {
+            handleException(e);
+        } finally {
+            HibernateFactory.close(session);
+        }
+        return objects;
     }
-  
+
 }

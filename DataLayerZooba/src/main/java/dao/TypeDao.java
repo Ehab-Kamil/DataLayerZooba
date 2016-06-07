@@ -6,12 +6,14 @@
  */
 package dao;
 
+import Exceptions.DataAccessLayerException;
 import abstractDao.AbstractDao;
+import abstractDao.HibernateFactory;
 import java.util.List;
+import org.hibernate.Hibernate;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import pojo.MeasuringUnit;
-import pojo.Service;
+import org.hibernate.criterion.Example;
 import pojo.Type;
 
 /**
@@ -20,35 +22,42 @@ import pojo.Type;
  */
 public class TypeDao extends AbstractDao<Type> {
     
-    private final SessionFactory factory;
-    
-    public TypeDao(SessionFactory factory) {
+    Session session;
+
+    public TypeDao(Session s) {
         super(Type.class);
-        this.factory = factory;
+        session = s;
     }
-    
-    public Type getById(int id) {
-        Session session = factory.openSession();
-        
-        Type t = (Type) session.createQuery("SELECT t FROM Type t WHERE t.id = :id").setInteger("id", id).uniqueResult();
-        session.close();
-        return t;
+
+    public List<Type> findAll() throws DataAccessLayerException {
+        return super.findAll(Type.class); //To change body of generated methods, choose Tools | Templates.
     }
-    
-    public List<Type> getByMeasuringUnit(MeasuringUnit measuringUnit) {
-        Session session = factory.openSession();
-        
-        List<Type> list = session.createQuery("SELECT t FROM Type t WHERE t.measuringUnit.id = :id").setInteger("id", measuringUnit.getId()).list();
-        session.close();
-        return list;
+
+    public Type find(Long id) throws DataAccessLayerException {
+        return super.find(Type.class, id); //To change body of generated methods, choose Tools | Templates.
     }
-    
-    public List<Type> getByService(Service service) {
-        Session session = factory.openSession();
-        
-        List<Type> list = session.createQuery("SELECT t FROM Type t WHERE t.service = :id").setInteger("id", service.getId()).list();
-        session.close();
-        return list;
+
+    @Override
+    public List<Type> findByExample(Type t) throws DataAccessLayerException {
+        // return super.findByExample(t);
+        List<Type> objects = null;
+        try {
+            startOperation();
+            session = HibernateFactory.openSession();
+
+            objects = session.createCriteria(t.getClass()).add(Example.create(t).excludeZeroes()).list();
+            for (Type object : objects) {
+                Hibernate.initialize(object.getMeasuringUnit());
+                Hibernate.initialize(object.getTrackingDatas());
+                Hibernate.initialize(object.getService());
+            }
+//            tx.commit();
+        } catch (HibernateException e) {
+            handleException(e);
+        } finally {
+            HibernateFactory.close(session);
+        }
+        return objects;
     }
-    
+
 }
