@@ -5,13 +5,14 @@
  */
 package dao;
 
+import Exceptions.DataAccessLayerException;
 import abstractDao.AbstractDao;
 import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import pojo.Address;
 import pojo.ServiceProvider;
 import pojo.ServiceProviderCalendar;
@@ -24,30 +25,23 @@ import pojo.ServiceProviderServices;
  */
 public class ServiceProviderDAO extends AbstractDao<ServiceProvider> {
 
-    SessionFactory sessionFactory;
+    Session session;
 
-    public ServiceProviderDAO(SessionFactory sessionFactory) {
+    public ServiceProviderDAO(Session session) {
         super(ServiceProvider.class);
-        this.sessionFactory = sessionFactory;
+        this.session = session;
     }
 
-    public ArrayList<ServiceProvider> findServiceProviderData(ServiceProvider sp) {
-        Session session = sessionFactory.openSession();
-        Criteria crit = session.createCriteria(ServiceProvider.class);
-
-        List results = new ArrayList<ServiceProvider>();
-
-        results = crit.list();
-
-        System.out.println(results);
-
-        session.close();
-
-        return (ArrayList<ServiceProvider>) results;
+      public List<ServiceProvider> findAll() throws DataAccessLayerException {
+        return super.findAll(ServiceProvider.class); //To change body of generated methods, choose Tools | Templates.
     }
 
+    public ServiceProvider find(Long id) throws DataAccessLayerException {
+        return super.find(ServiceProvider.class, id); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+  
     public ArrayList<ServiceProvider> findServiceProviderbranch(ServiceProvider sp) {
-        Session session = sessionFactory.openSession();
 
         List branch = new ArrayList<ServiceProvider>();
         Query quary = (Query) session.createQuery("select sp from ServiceProvider s , ServiceProvider sp where sp.serviceProvider = :id");
@@ -62,8 +56,9 @@ public class ServiceProviderDAO extends AbstractDao<ServiceProvider> {
     }
 
     public ArrayList<ServiceProviderPhone> findServiceProviderPhone(ServiceProvider sp) {
-        Session session = sessionFactory.openSession();
+
         Criteria crit = session.createCriteria(ServiceProviderPhone.class);
+        crit.add(Restrictions.eq("ServiceProvider", sp));
 
         List results = new ArrayList<ServiceProviderPhone>();
 
@@ -77,9 +72,9 @@ public class ServiceProviderDAO extends AbstractDao<ServiceProvider> {
     }
 
     public ArrayList<ServiceProviderCalendar> findServiceProviderCalender(ServiceProvider sp) {
-        Session session = sessionFactory.openSession();
-        Criteria crit = session.createCriteria(ServiceProviderCalendar.class);
 
+        Criteria crit = session.createCriteria(ServiceProviderCalendar.class);
+        crit.add(Restrictions.eq("ServiceProvider", sp));
         List results = new ArrayList<ServiceProviderCalendar>();
 
         results = crit.list();
@@ -92,10 +87,9 @@ public class ServiceProviderDAO extends AbstractDao<ServiceProvider> {
     }
 
     public ArrayList<Address> findServiceProviderAddress(ServiceProvider sp) {
-        Session session = sessionFactory.openSession();
 
         Criteria crit = session.createCriteria(Address.class);
-
+        crit.add(Restrictions.eq("ServiceProvider", sp));
         List results = new ArrayList<Address>();
 
         results = crit.list();
@@ -108,10 +102,9 @@ public class ServiceProviderDAO extends AbstractDao<ServiceProvider> {
     }
 
     public ArrayList<ServiceProviderServices> findServiceProviderServices(ServiceProvider sp) {
-        Session session = sessionFactory.openSession();
 
         Criteria crit = session.createCriteria(ServiceProviderServices.class);
-
+        crit.add(Restrictions.eq("ServiceProvider", sp));
         List results = new ArrayList<ServiceProviderServices>();
 
         results = crit.list();
@@ -121,6 +114,16 @@ public class ServiceProviderDAO extends AbstractDao<ServiceProvider> {
         session.close();
 
         return (ArrayList<ServiceProviderServices>) results;
+    }
+
+    public List<ServiceProvider> findServiceProviderMakes(String make) {
+
+        Criteria crt = session.createCriteria(ServiceProvider.class);
+
+        crt.add(Restrictions.eq("ServiceProvider.makes", make));
+        List<ServiceProvider> lst = crt.list();
+
+        return lst;
     }
 
 }

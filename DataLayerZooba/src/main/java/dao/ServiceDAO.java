@@ -5,12 +5,13 @@
  */
 package dao;
 
+import Exceptions.DataAccessLayerException;
 import abstractDao.AbstractDao;
 import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import pojo.Service;
 import pojo.ServiceProviderServices;
 import pojo.Type;
@@ -21,32 +22,28 @@ import pojo.Type;
  */
 public class ServiceDAO extends AbstractDao<Service> {
 
-    SessionFactory sessionFactory;
+    Session session;
 
-    public ServiceDAO(SessionFactory sessionFactory) {
+    public ServiceDAO(Session session) {
         super(Service.class);
-        this.sessionFactory = sessionFactory;
+        this.session = session;
     }
 
-    public ArrayList<Service> findServiceName(Service s) {
-        Session session = sessionFactory.openSession();
-        Criteria crit = session.createCriteria(Service.class);
-
-        List results = new ArrayList<Service>();
-
-        results = crit.list();
-
-        System.out.println(results);
-
-        session.close();
-
-        return (ArrayList<Service>) results;
+     public List<Service> findAll() throws DataAccessLayerException {
+        return super.findAll(Service.class); //To change body of generated methods, choose Tools | Templates.
     }
 
+    public Service find(Long id) throws DataAccessLayerException {
+        return super.find(Service.class, id); //To change body of generated methods, choose Tools | Templates.
+    }
+
+ 
     public ArrayList<Type> findServiceType(Service s) {
-        Session session = sessionFactory.openSession();
+        
+        
         Criteria crit = session.createCriteria(Service.class);
-
+        crit.add(Restrictions.eq("Service", s));
+        
         List results = new ArrayList<Type>();
 
         results = crit.list();
@@ -59,9 +56,11 @@ public class ServiceDAO extends AbstractDao<Service> {
     }
 
     public ArrayList<ServiceProviderServices> findServiceProviderService(Service s) {
-        Session session = sessionFactory.openSession();
+
         Criteria crit = session.createCriteria(Service.class);
 
+         crit.add(Restrictions.eq("Service", s));
+        
         List results = new ArrayList<ServiceProviderServices>();
 
         results = crit.list();
