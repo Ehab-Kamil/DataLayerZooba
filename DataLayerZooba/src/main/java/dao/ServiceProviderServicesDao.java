@@ -8,11 +8,14 @@ package dao;
 import Exceptions.DataAccessLayerException;
 import abstractDao.AbstractDao;
 import abstractDao.HibernateFactory;
+import java.util.Date;
 import java.util.List;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Example;
+import pojo.Service;
+import pojo.ServiceProvider;
 import pojo.ServiceProviderServices;
 
 /**
@@ -59,4 +62,46 @@ public class ServiceProviderServicesDao extends AbstractDao<ServiceProviderServi
         return objects;
     }
 
+    
+    public ServiceProviderServices getById(int id) {
+        
+
+        ServiceProviderServices s = (ServiceProviderServices) session.createQuery("SELECT s FROM ServiceProviderServices s WHERE s.id = :id").setInteger("id", id).uniqueResult();
+        
+        return s;
+    }
+
+    public List<ServiceProviderServices> getByStartingHour(Date startingHour) {
+        
+
+        List<ServiceProviderServices> list = session.createQuery("SELECT s FROM ServiceProviderServices s WHERE s.startingHour = :startingHour").setDate("startingHour", startingHour).list();
+        
+        return list;
+    }
+
+    public List<ServiceProviderServices> getByEndingHour(Date endingHour) {
+        
+
+        List<ServiceProviderServices> list = session.createQuery("SELECT s FROM ServiceProviderServices s WHERE s.endingHour = :endingHour").setDate("endingHour", endingHour).list();
+        
+        return list;
+    }
+
+    public List<ServiceProviderServices> getByService(Service service) {
+        
+
+        List<ServiceProviderServices> list =  session.createQuery("SELECT s FROM ServiceProviderServices s WHERE s.service.id = :id")
+                .setInteger("id", service.getId()).list();
+        
+        return list;
+    }
+
+    public List<ServiceProviderServices> getByServiceProvider(ServiceProvider serviceProvider) {
+        
+
+        List<ServiceProviderServices> list =  session.createQuery("SELECT s FROM ServiceProviderServices s WHERE s.serviceProvider.id = :id")
+                .setInteger("id", serviceProvider.getId()).list();
+        
+        return list;
+    }
 }

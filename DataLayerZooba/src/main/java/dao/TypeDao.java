@@ -14,6 +14,8 @@ import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Example;
+import pojo.MeasuringUnit;
+import pojo.Service;
 import pojo.Type;
 
 /**
@@ -60,4 +62,28 @@ public class TypeDao extends AbstractDao<Type> {
         return objects;
     }
 
+    public Type getById(int id) {
+        
+        
+        Type t = (Type) session.createQuery("SELECT t FROM Type t WHERE t.id = :id").setInteger("id", id).uniqueResult();
+        
+        return t;
+    }
+    
+    public List<Type> getByMeasuringUnit(MeasuringUnit measuringUnit) {
+        
+        
+        List<Type> list = session.createQuery("SELECT t FROM Type t WHERE t.measuringUnit.id = :id").setInteger("id", measuringUnit.getId()).list();
+        
+        return list;
+    }
+    
+    public List<Type> getByService(Service service) {
+        
+        
+        List<Type> list = session.createQuery("SELECT t FROM Type t WHERE t.service = :id").setInteger("id", service.getId()).list();
+        
+        return list;
+    }
+    
 }

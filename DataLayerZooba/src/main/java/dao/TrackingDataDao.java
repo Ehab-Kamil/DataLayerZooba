@@ -14,6 +14,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Example;
 import pojo.TrackingData;
+import pojo.Vehicle;
 
 /**
  *
@@ -58,5 +59,30 @@ public class TrackingDataDao extends AbstractDao<TrackingData> {
         }
         return objects;
     }
+    
+       public TrackingData getById(int id){
+      
+        
+         TrackingData td = (TrackingData) session.createQuery("SELECT td FROM TrackingData td WHERE td.id = :id").setInteger("id", id).uniqueResult();
+      
+        return td;
+    }
+    
+       public TrackingData getByintialOdemeter(int intialOdemeter){
+      
+        
+         TrackingData td = (TrackingData) session.createQuery("SELECT td FROM TrackingData td WHERE td.intialOdemeter = :intialOdemeter").setInteger("intialOdemeter", intialOdemeter).uniqueResult();
+      
+        return td;
+    }
+     
+       public List<TrackingData> getByVehicle(Vehicle vehicle){
+      
+       
+           List<TrackingData> list =  session.createQuery("SELECT td FROM TrackingData td ,Vehicle v WHERE td.vehicle.id = :id").setInteger("id", vehicle.getId()).list();
+     
+        return list;
+    }
+
 
 }
