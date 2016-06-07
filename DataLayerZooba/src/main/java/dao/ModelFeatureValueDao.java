@@ -33,7 +33,7 @@ public class ModelFeatureValueDao extends AbstractDao<ModelFeaturesValues> {
     }
 
     
-    public ModelFeaturesValues find(Long id) {
+    public ModelFeaturesValues find(int id) {
         return super.find(ModelFeaturesValues.class, id); //To change body of generated methods, choose Tools | Templates.
     }
 

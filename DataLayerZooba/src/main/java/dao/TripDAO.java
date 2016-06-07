@@ -54,7 +54,7 @@ public class TripDAO extends AbstractDao<Trips> {
         return super.findAll(Trips.class);
     }
 
-    public Trips find(Long id) throws DataAccessLayerException {
+    public Trips find(int id) throws DataAccessLayerException {
         return super.find(Trips.class, id);
     }
 

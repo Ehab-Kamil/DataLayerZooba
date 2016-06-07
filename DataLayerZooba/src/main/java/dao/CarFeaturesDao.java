@@ -43,7 +43,7 @@ public class CarFeaturesDao extends AbstractDao<CarFeatures> {
         return super.findAll(CarFeatures.class); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public CarFeatures find(Long id) {
+    public CarFeatures find(int id) {
         return super.find(CarFeatures.class, id); //To change body of generated methods, choose Tools | Templates.
     }
 

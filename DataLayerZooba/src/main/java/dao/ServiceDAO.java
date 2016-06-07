@@ -33,7 +33,7 @@ public class ServiceDAO extends AbstractDao<Service> {
         return super.findAll(Service.class); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public Service find(Long id) throws DataAccessLayerException {
+    public Service find(int id) throws DataAccessLayerException {
         return super.find(Service.class, id); //To change body of generated methods, choose Tools | Templates.
     }
 

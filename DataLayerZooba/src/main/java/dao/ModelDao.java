@@ -31,7 +31,7 @@ public class ModelDao extends AbstractDao<Model> {
         return super.findByExample(t); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public Model find(Long id) {
+    public Model find(int id) {
         return super.find(Model.class, id); //To change body of generated methods, choose Tools | Templates.
     }
 

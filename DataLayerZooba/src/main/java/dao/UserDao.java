@@ -32,7 +32,7 @@ public class UserDao extends AbstractDao<User> {
         return super.findAll(User.class); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public User find(Long id) throws DataAccessLayerException {
+    public User find(int id) throws DataAccessLayerException {
         return super.find(User.class, id); //To change body of generated methods, choose Tools | Templates.
     }
 

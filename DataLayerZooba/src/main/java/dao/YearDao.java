@@ -31,7 +31,7 @@ public class YearDao extends AbstractDao<Year> {
         return super.findByExample(t); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public Year find(Long id) {
+    public Year find(int id) {
         return super.find(Year.class, id); //To change body of generated methods, choose Tools | Templates.
     }
 

@@ -35,7 +35,7 @@ public class TypeDao extends AbstractDao<Type> {
         return super.findAll(Type.class); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public Type find(Long id) throws DataAccessLayerException {
+    public Type find(int id) throws DataAccessLayerException {
         return super.find(Type.class, id); //To change body of generated methods, choose Tools | Templates.
     }
 

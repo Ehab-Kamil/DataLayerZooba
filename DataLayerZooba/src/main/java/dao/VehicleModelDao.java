@@ -24,7 +24,7 @@ public class VehicleModelDao extends AbstractDao<VehicleModel>{
         return super.findByExample(t); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public VehicleModel find(Long id) {
+    public VehicleModel find(int id) {
         return super.find(VehicleModel.class, id); //To change body of generated methods, choose Tools | Templates.
     }
 

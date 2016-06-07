@@ -32,7 +32,7 @@ public class TrimDao extends AbstractDao<Trim> {
         return super.findByExample(t); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public Trim find(Long id) {
+    public Trim find(int id) {
         return super.find(Trim.class, id); //To change body of generated methods, choose Tools | Templates.
     }
 

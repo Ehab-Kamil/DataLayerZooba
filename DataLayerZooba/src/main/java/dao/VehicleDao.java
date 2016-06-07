@@ -30,7 +30,7 @@ public class VehicleDao extends AbstractDao<Vehicle> {
         session = s;
     }
 
-    public Vehicle find(Long id) throws DataAccessLayerException {
+    public Vehicle find(int id) throws DataAccessLayerException {
         return super.find(Vehicle.class, id); //To change body of generated methods, choose Tools | Templates.
     }
 

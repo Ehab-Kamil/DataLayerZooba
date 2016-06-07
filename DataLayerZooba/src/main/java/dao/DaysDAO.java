@@ -15,24 +15,21 @@ import pojo.Days;
  *
  * @author repixels
  */
-public class DaysDAO extends AbstractDao<Days>
-{
+public class DaysDAO extends AbstractDao<Days> {
+
     Session session;
-    
-    public DaysDAO(Session s)
-    {
+
+    public DaysDAO(Session s) {
         super(Days.class);
         session = s;
     }
 
-    public Days find(Long id)
-    {
+    public Days find(int id) {
         return super.find(Days.class, id);
     }
-    
-    public List<Days> findAll() throws DataAccessLayerException
-    {
+
+    public List<Days> findAll() throws DataAccessLayerException {
         return super.findAll(Days.class);
     }
-    
+
 }

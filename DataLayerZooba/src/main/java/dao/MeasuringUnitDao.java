@@ -33,7 +33,7 @@ public class MeasuringUnitDao extends AbstractDao<MeasuringUnit> {
         return super.findAll(MeasuringUnit.class); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public MeasuringUnit find(Long id) throws DataAccessLayerException{
+    public MeasuringUnit find(int id) throws DataAccessLayerException{
         return super.find(MeasuringUnit.class, id); //To change body of generated methods, choose Tools | Templates.
     }
 

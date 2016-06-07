@@ -92,7 +92,7 @@ public class CoordinatesDAO extends AbstractDao<Coordinates> {
         return super.findAll(Coordinates.class);
     }
 
-    public Coordinates find(Long id) throws DataAccessLayerException {
+    public Coordinates find(int id) throws DataAccessLayerException {
         return super.find(Coordinates.class, id);
     }
 

@@ -35,7 +35,7 @@ public class MakeDao extends AbstractDao<Make> {
         return super.findByExample(t); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public Make find(Long id) {
+    public Make find(int id) {
         return super.find(Make.class, id); //To change body of generated methods, choose Tools | Templates.
     }
 

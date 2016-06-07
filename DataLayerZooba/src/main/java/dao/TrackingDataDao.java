@@ -33,7 +33,7 @@ public class TrackingDataDao extends AbstractDao<TrackingData> {
         return super.findAll(TrackingData.class); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public TrackingData find(Long id) throws DataAccessLayerException {
+    public TrackingData find(int id) throws DataAccessLayerException {
         return super.find(TrackingData.class, id); //To change body of generated methods, choose Tools | Templates.
     }
 

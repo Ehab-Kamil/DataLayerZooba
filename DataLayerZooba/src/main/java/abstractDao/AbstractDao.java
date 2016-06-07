@@ -65,7 +65,7 @@ public abstract class AbstractDao<T> {
         }
     }
 
-    protected T find(Class clazz, Long id) {
+    protected T find(Class clazz, int id) {
         T obj = null;
         try {
             startOperation();

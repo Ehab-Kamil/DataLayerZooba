@@ -36,7 +36,7 @@ public class ServiceProviderDAO extends AbstractDao<ServiceProvider> {
         return super.findAll(ServiceProvider.class); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public ServiceProvider find(Long id) throws DataAccessLayerException {
+    public ServiceProvider find(int id) throws DataAccessLayerException {
         return super.find(ServiceProvider.class, id); //To change body of generated methods, choose Tools | Templates.
     }
     

@@ -34,7 +34,7 @@ public class ModelFeaturesValuesDao extends AbstractDao<ModelFeaturesValues> {
         return super.findAll(ModelFeaturesValues.class); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public ModelFeaturesValues find(Long id) throws DataAccessLayerException {
+    public ModelFeaturesValues find(int id) throws DataAccessLayerException {
         return super.find(ModelFeaturesValues.class, id); //To change body of generated methods, choose Tools | Templates.
     }
 

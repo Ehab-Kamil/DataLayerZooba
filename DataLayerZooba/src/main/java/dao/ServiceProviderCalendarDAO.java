@@ -138,7 +138,7 @@ public class ServiceProviderCalendarDAO extends AbstractDao<ServiceProviderCalen
         return super.findAll(ServiceProviderCalendar.class);
     }
 
-    public ServiceProviderCalendar find(Long id) throws DataAccessLayerException {
+    public ServiceProviderCalendar find(int id) throws DataAccessLayerException {
         return super.find(ServiceProviderCalendar.class, id);
     }
 

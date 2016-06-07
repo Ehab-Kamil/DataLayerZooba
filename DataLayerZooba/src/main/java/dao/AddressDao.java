@@ -43,7 +43,7 @@ public class AddressDao extends AbstractDao<Address> {
         return super.findAll(Address.class);
     }
 
-    public Address find(Long id) {
+    public Address find(int id) {
         return (Address) super.find(Address.class, id); //To change body of generated methods, choose Tools | Templates.
     }
 
