@@ -13,7 +13,9 @@ import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Example;
+import pojo.CarFeatures;
 import pojo.ModelFeaturesValues;
+import pojo.VehicleModel;
 
 /**
  *
@@ -58,5 +60,39 @@ public class ModelFeaturesValuesDao extends AbstractDao<ModelFeaturesValues> {
         }
         return objects;
     }
- 
+
+    
+    
+    public ModelFeaturesValues getById(int id) {
+       
+        
+        ModelFeaturesValues m = (ModelFeaturesValues) session.createQuery("SELECT m FROM ModelFeaturesValues m WHERE m.id = :id").setInteger("id", id).uniqueResult();
+       
+        return m;
+    }
+    
+    public ModelFeaturesValues getByValue(String value) {
+       
+        
+        ModelFeaturesValues m = (ModelFeaturesValues) session.createQuery("SELECT m FROM ModelFeaturesValues m WHERE m.value = :value").setString("value", value).uniqueResult();
+       
+        return m;
+    }
+    
+    public List<ModelFeaturesValues> getByCarFeatures(CarFeatures carFeatures) {
+       
+        
+        List<ModelFeaturesValues> list = session.createQuery("SELECT m FROM ModelFeaturesValues m WHERE m.carFeatures.id = :id").setInteger("id", carFeatures.getId()).list();
+        
+        return list;
+    }
+    
+    public List<ModelFeaturesValues> getByVehicleModel(VehicleModel vehicleModel) {
+        
+        
+        List<ModelFeaturesValues> list = session.createQuery("SELECT m FROM VehicleModel v join v.modelFeaturesValueses m WHERE v.id = :id").setInteger("id", vehicleModel.getId()).list();
+        
+        return list;
+    }
+    
 }

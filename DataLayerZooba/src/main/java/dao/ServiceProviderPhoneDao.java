@@ -13,6 +13,7 @@ import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Example;
+import pojo.ServiceProvider;
 import pojo.ServiceProviderPhone;
 
 /**
@@ -58,5 +59,28 @@ public class ServiceProviderPhoneDao extends AbstractDao<ServiceProviderPhone> {
         return objects;
     }
 
- 
+   public ServiceProviderPhone getById(int id) {
+      
+        
+        ServiceProviderPhone spp = (ServiceProviderPhone) session.createQuery("SELECT spp FROM ServiceProviderPhone spp WHERE spp.id = :id").setInteger("id", id).uniqueResult();
+      
+        return spp;
+    }
+    
+    public ServiceProviderPhone getByPhone(String phone) {
+      
+        
+        ServiceProviderPhone spp = (ServiceProviderPhone) session.createQuery("SELECT spp FROM ServiceProviderPhone spp WHERE spp.phone = :phone").setString("phone", phone).uniqueResult();
+      
+        return spp;
+    }
+    
+    public List<ServiceProviderPhone> getByServiceProvider(ServiceProvider serviceProvider) {
+      
+        
+        List<ServiceProviderPhone> list = session.createQuery("SELECT spp FROM ServiceProviderPhone spp ,ServiceProvider sp WHERE spp.serviceProvider.id = :id ").setInteger("id", serviceProvider.getId()).list();
+      
+        return list;
+    }
+    
 }

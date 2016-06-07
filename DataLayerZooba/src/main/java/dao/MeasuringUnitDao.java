@@ -14,6 +14,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Example;
 import pojo.MeasuringUnit;
+import pojo.Type;
 
 /**
  *
@@ -58,5 +59,49 @@ public class MeasuringUnitDao extends AbstractDao<MeasuringUnit> {
         return objects;
     }
 
+    
+    
+     public MeasuringUnit getById(int id) {
+        
+
+        MeasuringUnit m = (MeasuringUnit) session.createQuery("SELECT m FROM MeasuringUnit m WHERE m.id = :id").setInteger("id", id).uniqueResult();
+        
+        return m;
+    }
+
+   
+     public MeasuringUnit getByName(String name) {
+        
+
+        MeasuringUnit m = (MeasuringUnit) session.createQuery("SELECT m FROM MeasuringUnit m WHERE m.name = :name").setString("name", name).uniqueResult();
+        
+        return m;
+    }
+
+     public MeasuringUnit getByMeasuringUnitcol(String measuringUnitcol) {
+        
+
+        MeasuringUnit m = (MeasuringUnit) session.createQuery("SELECT m FROM MeasuringUnit m WHERE m.measuringUnitcol = :measuringUnitcol").setString("measuringUnitcol", measuringUnitcol).uniqueResult();
+        
+        return m;
+    }
+
+       public MeasuringUnit getBytype(Type type) {
+        
+
+        MeasuringUnit m = (MeasuringUnit) session.createQuery("SELECT m FROM MeasuringUnit m , Type t WHERE t.id = :id and t.measuringUnit=m").setInteger("id", type.getId()).uniqueResult();
+        
+        return m;
+    }
+
+            public MeasuringUnit getBySuffix(String suffix) {
+        
+
+        MeasuringUnit m = (MeasuringUnit) session.createQuery("SELECT m FROM MeasuringUnit m WHERE m.suffix = :suffix").setString("suffix", suffix).uniqueResult();
+        
+        return m;
+    }
+
+       
 
 }
