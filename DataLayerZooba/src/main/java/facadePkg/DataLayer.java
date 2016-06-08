@@ -7,8 +7,10 @@ package facadePkg;
 
 import Exceptions.DataAccessLayerException;
 import Utils.MailSender;
+//import Utils.MailSender;
 import abstractDao.HibernateFactory;
 import dao.*;
+import java.util.ArrayList;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import pojo.*;
@@ -89,11 +91,13 @@ public class DataLayer {
         userDao = new UserDao(session);
         User u = new User();
         u.setEmail(email);
-        User user = (User) userDao.findByExample(u);
-        
+        ArrayList<User> user =  (ArrayList<User>) userDao.findByExample(u);
+        if(user.size()>0)
+        {
+    
         MailSender mailSender = new MailSender();
-        mailSender.sendRestPasswordMail(user.getEmail(), user.getPassword());
-                
+        mailSender.sendRestPasswordMail(user.get(0).getEmail(), user.get(0).getPassword());
+        }    
         result = 1;
 
         return result;
