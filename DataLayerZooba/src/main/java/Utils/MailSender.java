@@ -25,13 +25,6 @@ import javax.mail.PasswordAuthentication;
  */
 public class MailSender {
 
-    public static void main(String[] args) {
-
-        MailSender mailSender = new MailSender();
-
-        mailSender.sendRestPasswordMail("", "");
-    }
-
     public void sendRestPasswordMail(String email, String password) {
 
         String username = "z00000uba@gmail.com";
@@ -43,34 +36,23 @@ public class MailSender {
         props.put("mail.smtp.host", "smtp.gmail.com");
         props.put("mail.smtp.port", "587");
         props.put("mail.smtp.user", username);
-        props.put("mail.smtp.password", pass);
-
-//        Session session = Session.getInstance(props,
-//                new javax.mail.Authenticator() {
-//            protected PasswordAuthentication getPasswordAuthentication() {
-//                return new PasswordAuthentication("z00000uba@gmail.com", "A1B23456");
-//            }
-//        });
+        props.put("mail.smtp.password", password);
+        
         Session session = Session.getInstance(props, null);
 
         try {
             Message msg = new MimeMessage(session);
-            msg.setFrom(new InternetAddress("z00000uba@gmail.com"));
-            msg.addRecipient(Message.RecipientType.TO, new InternetAddress("ehabkamil2@gmail.com"));
+            msg.setFrom(new InternetAddress(username));
+            msg.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
             msg.setSubject("Your Example.com account has been activated");
-            String mailBody = "Ay kalam fel mail body";
+            String mailBody = "Your Password is : " + password;
             msg.setText(mailBody);
-//            msg.setContent(mailBody, "text/html");
             Transport transport = session.getTransport("smtp");
-            transport.connect("smtp.gmail.com", username, pass);
+            transport.connect("smtp.gmail.com", username, password);
             transport.sendMessage(msg, msg.getAllRecipients());
             transport.close();
-//            Transport.send(msg);
         } catch (AddressException e) {
-
         } catch (MessagingException e) {
-            
         }
-        System.out.println("Done...");
     }
 }

@@ -6,6 +6,7 @@
 package facadePkg;
 
 import Exceptions.DataAccessLayerException;
+import Utils.MailSender;
 import abstractDao.HibernateFactory;
 import dao.*;
 import org.hibernate.Session;
@@ -37,13 +38,15 @@ public class DataLayer {
     VehicleDao vehicleDao;
     VehicleModelDao vehicleModelDao;
     YearDao yearDao;
+    Session session;
+    Transaction transaction;
 
     public int insertVehicle(Make make, Model model, Year year, Trim trim) {
 
         int result = 0;
 
-        Session session = HibernateFactory.openSession();
-        Transaction tx = session.beginTransaction();
+        session = HibernateFactory.openSession();
+        transaction = session.beginTransaction();
         try {
             makeDao = new MakeDao(session);
             modelDao = new ModelDao(session);
@@ -66,14 +69,33 @@ public class DataLayer {
             yearDao.create(year);
             trimDao.create(trim);
             vehicleModelDao.create(vehicleModel);
-            tx.commit();
+            transaction.commit();
             result = 1;
         } catch (DataAccessLayerException ex) {
-            HibernateFactory.rollback(tx);
+            HibernateFactory.rollback(transaction);
             result = 0;
         } finally {
             HibernateFactory.close(session);
         }
+        return result;
+    }
+
+    public int sendForgetPasswordMail(String email) {
+
+        int result = 0;
+
+        session = HibernateFactory.openSession();
+        transaction = session.beginTransaction();
+        userDao = new UserDao(session);
+        User u = new User();
+        u.setEmail(email);
+        User user = (User) userDao.findByExample(u);
+        
+        MailSender mailSender = new MailSender();
+        mailSender.sendRestPasswordMail(user.getEmail(), user.getPassword());
+                
+        result = 1;
+
         return result;
     }
 
