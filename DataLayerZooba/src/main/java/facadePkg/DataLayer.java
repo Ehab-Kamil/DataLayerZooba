@@ -21,11 +21,9 @@ public class DataLayer {
     CarFeaturesDao carFeaturesDao;
     CoordinatesDAO coordinatesDAO;
     MakeDao makeDao;
-    MakeServiceProviderDAO makeServiceProviderDAO;
     MeasuringUnitDao measuringUnitDao;
     ModelDao modelDao;
     ModelFeatureValueDao modelFeatureValueDao;
-    ModelFeaturesValuesDao modelFeaturesValuesDao;
     ServiceDAO serviceDAO;
     ServiceProviderCalendarDAO serviceProviderCalendarDAO;
     ServiceProviderDAO serviceProviderDAO;

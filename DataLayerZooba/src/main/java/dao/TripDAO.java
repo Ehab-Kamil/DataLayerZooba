@@ -26,7 +26,7 @@ public class TripDAO extends AbstractDao<Trips> {
     Session session;
 
     public TripDAO(Session s) {
-        super(Trips.class);
+        super(Trips.class,s);
         session = s;
     }
 

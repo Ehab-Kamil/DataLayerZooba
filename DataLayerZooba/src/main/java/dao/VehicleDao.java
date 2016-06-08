@@ -26,7 +26,7 @@ public class VehicleDao extends AbstractDao<Vehicle> {
     Session session;
 
     public VehicleDao(Session s) {
-        super(Vehicle.class);
+        super(Vehicle.class,s);
         session = s;
     }
 

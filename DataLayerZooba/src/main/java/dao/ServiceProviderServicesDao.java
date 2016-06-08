@@ -27,7 +27,7 @@ public class ServiceProviderServicesDao extends AbstractDao<ServiceProviderServi
       Session session;
 
     public ServiceProviderServicesDao(Session s) {
-        super(ServiceProviderServices.class);
+        super(ServiceProviderServices.class,s);
         session = s;
     }
 

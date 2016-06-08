@@ -22,7 +22,7 @@ public class ModelDao extends AbstractDao<Model> {
     Session session;
 
     public ModelDao(Session s) {
-        super(Model.class);
+        super(Model.class,s);
         session =s;
     }
 

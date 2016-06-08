@@ -25,7 +25,7 @@ public class TrackingDataDao extends AbstractDao<TrackingData> {
         Session session;
 
     public TrackingDataDao(Session s) {
-        super(TrackingData.class);
+        super(TrackingData.class,s);
         session = s;
     }
 

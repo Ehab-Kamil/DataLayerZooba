@@ -26,7 +26,7 @@ public class CoordinatesDAO extends AbstractDao<Coordinates> {
     Session session;
 
     public CoordinatesDAO(Session s) {
-        super(Coordinates.class);
+        super(Coordinates.class,s);
         session = s;
     }
 

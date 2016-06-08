@@ -25,7 +25,7 @@ public class ServiceDAO extends AbstractDao<Service> {
     Session session;
 
     public ServiceDAO(Session session) {
-        super(Service.class);
+        super(Service.class,session);
         this.session = session;
     }
 

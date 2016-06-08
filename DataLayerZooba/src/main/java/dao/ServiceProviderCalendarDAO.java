@@ -28,7 +28,7 @@ public class ServiceProviderCalendarDAO extends AbstractDao<ServiceProviderCalen
     Session session;
 
     public ServiceProviderCalendarDAO(Session s) {
-        super(ServiceProviderCalendar.class);
+        super(ServiceProviderCalendar.class,s);
         session = s;
     }
 

@@ -27,7 +27,7 @@ public class AddressDao extends AbstractDao<Address> {
     Session session;
 
     public AddressDao(Session s) {
-        super(Address.class);
+        super(Address.class,s);
         session = s;
     }
 

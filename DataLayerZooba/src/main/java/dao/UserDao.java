@@ -24,7 +24,7 @@ public class UserDao extends AbstractDao<User> {
     Session session;
 
     public UserDao(Session s) {
-        super(User.class);
+        super(User.class,s);
         session = s;
     }
 

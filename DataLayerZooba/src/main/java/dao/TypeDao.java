@@ -27,7 +27,7 @@ public class TypeDao extends AbstractDao<Type> {
     Session session;
 
     public TypeDao(Session s) {
-        super(Type.class);
+        super(Type.class,s);
         session = s;
     }
 

@@ -24,9 +24,10 @@ public abstract class AbstractDao<T> {
     protected Session session;
     private Transaction tx;
 
-    public AbstractDao(Class<T> t) {
+    public AbstractDao(Class<T> t,Session s) {
         HibernateFactory.buildIfNeeded();
         entity = t;
+        session=s;
     }
 
     public void create(T t) {

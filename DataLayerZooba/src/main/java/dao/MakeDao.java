@@ -24,7 +24,7 @@ public class MakeDao extends AbstractDao<Make> {
     }
 
     public MakeDao(Session s) {
-        super(Make.class);
+        super(Make.class,s);
         session = s;
     }
 

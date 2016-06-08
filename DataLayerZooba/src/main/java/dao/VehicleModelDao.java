@@ -19,7 +19,7 @@ public class VehicleModelDao extends AbstractDao<VehicleModel>{
     Session session;
     
     public VehicleModelDao(Session s) {
-        super(VehicleModel.class);
+        super(VehicleModel.class,s);
         session = s;
     }
 

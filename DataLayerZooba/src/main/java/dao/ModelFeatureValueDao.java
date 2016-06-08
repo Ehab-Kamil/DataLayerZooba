@@ -11,6 +11,7 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+import pojo.CarFeatures;
 import pojo.ModelFeaturesValues;
 import pojo.VehicleModel;
 
@@ -22,34 +23,14 @@ public class ModelFeatureValueDao extends AbstractDao<ModelFeaturesValues> {
 
     Session session;
 
-    public ModelFeatureValueDao() {
-        super(ModelFeaturesValues.class);
-        session = HibernateFactory.openSession();
+    public ModelFeatureValueDao(Session s) {
+        super(ModelFeaturesValues.class,s);
+        session = s;
     }
 
-    @Override
-    public List<ModelFeaturesValues> findByExample(ModelFeaturesValues t) {
-        return super.findByExample(t); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    
+  
     public ModelFeaturesValues find(int id) {
         return super.find(ModelFeaturesValues.class, id); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void delete(ModelFeaturesValues t) {
-        super.delete(t); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void saveOrUpdate(ModelFeaturesValues t) {
-        super.saveOrUpdate(t); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void create(ModelFeaturesValues t) {
-        super.create(t); //To change body of generated methods, choose Tools | Templates.
     }
 
     
@@ -81,5 +62,20 @@ public class ModelFeatureValueDao extends AbstractDao<ModelFeaturesValues> {
         List<ModelFeaturesValues> lst = crt.list();
 
         return lst;
+    }
+     public List<ModelFeaturesValues> getByCarFeatures(CarFeatures carFeatures) {
+       
+        
+        List<ModelFeaturesValues> list = session.createQuery("SELECT m FROM ModelFeaturesValues m WHERE m.carFeatures.id = :id").setInteger("id", carFeatures.getId()).list();
+        
+        return list;
+    }
+    
+    public List<ModelFeaturesValues> getByVehicleModel(VehicleModel vehicleModel) {
+        
+        
+        List<ModelFeaturesValues> list = session.createQuery("SELECT m FROM VehicleModel v join v.modelFeaturesValueses m WHERE v.id = :id").setInteger("id", vehicleModel.getId()).list();
+        
+        return list;
     }
 }

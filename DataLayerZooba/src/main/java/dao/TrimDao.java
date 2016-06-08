@@ -23,7 +23,7 @@ public class TrimDao extends AbstractDao<Trim> {
     Session session;
 
     public TrimDao(Session s) {
-        super(Trim.class);
+        super(Trim.class,s);
         session = s;
     }
 

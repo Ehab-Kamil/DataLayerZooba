@@ -21,9 +21,9 @@ public class CarFeaturesDao extends AbstractDao<CarFeatures> {
 
     Session session;
 
-    public CarFeaturesDao() {
-        super(CarFeatures.class);
-        session = HibernateFactory.openSession();
+    public CarFeaturesDao(Session s) {
+        super(CarFeatures.class,s);
+        session = s;
     }
 
     public CarFeatures getCarFeaturesByName(String name) {

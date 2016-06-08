@@ -22,7 +22,7 @@ public class YearDao extends AbstractDao<Year> {
     Session session;
 
     public YearDao(Session s) {
-        super(Year.class);
+        super(Year.class,s);
         session =s;
     }
 

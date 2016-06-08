@@ -20,7 +20,7 @@ public class DaysDAO extends AbstractDao<Days> {
     Session session;
 
     public DaysDAO(Session s) {
-        super(Days.class);
+        super(Days.class,s);
         session = s;
     }
 

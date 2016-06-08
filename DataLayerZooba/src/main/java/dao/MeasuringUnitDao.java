@@ -25,7 +25,7 @@ public class MeasuringUnitDao extends AbstractDao<MeasuringUnit> {
     Session session;
 
     public MeasuringUnitDao(Session s) {
-        super(MeasuringUnit.class);
+        super(MeasuringUnit.class,s);
         this.session = s;
     }
 
