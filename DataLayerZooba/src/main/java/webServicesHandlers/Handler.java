@@ -133,4 +133,10 @@ public class Handler {
         return uarr.size() > 0;
     }
 
+    public List<Make> getVehicle() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+ 
+
 }
