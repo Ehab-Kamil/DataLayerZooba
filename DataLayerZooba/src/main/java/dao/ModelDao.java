@@ -21,9 +21,9 @@ public class ModelDao extends AbstractDao<Model> {
 
     Session session;
 
-    public ModelDao() {
+    public ModelDao(Session s) {
         super(Model.class);
-        session = HibernateFactory.openSession();
+        session =s;
     }
 
     @Override

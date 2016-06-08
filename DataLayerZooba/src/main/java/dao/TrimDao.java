@@ -22,9 +22,9 @@ public class TrimDao extends AbstractDao<Trim> {
 
     Session session;
 
-    public TrimDao() {
+    public TrimDao(Session s) {
         super(Trim.class);
-        session = HibernateFactory.openSession();
+        session = s;
     }
 
     @Override

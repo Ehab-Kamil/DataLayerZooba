@@ -16,6 +16,7 @@ import facadePkg.DataLayer;
 import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import pojo.Make;
 import pojo.Model;
 import pojo.Trim;
@@ -27,15 +28,16 @@ import pojo.Year;
  * @author yoka
  */
 public class Handler {
-   Session session;
-   UserDao uDao;
-    public Handler(){
-  session= HibernateFactory.openSession();
-             uDao = new UserDao(session);
-    }
-  
 
-     public User login(String user, String pass) {
+    Session session;
+    UserDao uDao;
+
+    public Handler() {
+        session = HibernateFactory.openSession();
+        uDao = new UserDao(session);
+    }
+
+    public User login(String user, String pass) {
         User u = new User();
         u.setUsername(user);
         u.setPassword(pass);
@@ -49,7 +51,7 @@ public class Handler {
         }
     }
 
-   public boolean userExists(String user) {
+    public boolean userExists(String user) {
         User u = new User();
         u.setUsername(user);
         ArrayList<User> uarr = (ArrayList<User>) uDao.findByExample(u);
@@ -61,34 +63,36 @@ public class Handler {
         return 0;
     }
 
-   public List<Make> getMake() {
+    public List<Make> getMake() {
+        Session session = HibernateFactory.openSession();
         List<Make> result = new ArrayList<>();
-        MakeDao makeDao = new MakeDao();
+        MakeDao makeDao = new MakeDao(session);
         result = makeDao.findAll();
         return result;
     }
 
     public List<Model> getModelByMake(String make) {
-        ModelDao modelDao = new ModelDao();
+        Session session = HibernateFactory.openSession();
+        ModelDao modelDao = new ModelDao(session);
         List<Model> result = modelDao.getModelsByMake(make);
         return result;
     }
 
-  public  List<Trim> getTrim(String model, String year) {
-
-        TrimDao trimDao = new TrimDao();
+    public List<Trim> getTrim(String model, String year) {
+        Session session = HibernateFactory.openSession();
+        TrimDao trimDao = new TrimDao(session);
         return trimDao.getTrimByYearAndModel(model, year);
 
     }
 
-   public List<Year> getYear(String model) {
-
-        YearDao yearDao = new YearDao();
+    public List<Year> getYear(String model) {
+        Session session = HibernateFactory.openSession();
+        YearDao yearDao = new YearDao(session);
         return yearDao.getYearByModel(model);
-        
+
     }
 
-  public  boolean addVehicle(String make, String model, String year, String trim) {
+    public boolean addVehicle(String make, String model, String year, String trim) {
         boolean result = false;
         try {
             DataLayer dataLayer = new DataLayer();
@@ -104,13 +108,13 @@ public class Handler {
         return result;
     }
 
-  public  User loginByEmail(String email, String pass) {
+    public User loginByEmail(String email, String pass) {
         User u = new User();
         u.setEmail(email);
         u.setPassword(pass);
 //        uDao = new UserDao();
         ArrayList<User> uarr = (ArrayList<User>) uDao.findByExample(u);
-         if (uarr.size() > 0) {
+        if (uarr.size() > 0) {
             User u1 = uarr.get(0);
             return u1;
         } else {
@@ -122,7 +126,7 @@ public class Handler {
 //        
 //    }
 
-  public  boolean emailExists(String email) {
+    public boolean emailExists(String email) {
         User u = new User();
         u.setEmail(email);
         ArrayList<User> uarr = (ArrayList<User>) uDao.findByExample(u);

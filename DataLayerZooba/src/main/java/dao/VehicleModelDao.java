@@ -7,6 +7,7 @@ package dao;
 
 import abstractDao.AbstractDao;
 import java.util.List;
+import org.hibernate.Session;
 import pojo.VehicleModel;
 
 /**
@@ -15,8 +16,11 @@ import pojo.VehicleModel;
  */
 public class VehicleModelDao extends AbstractDao<VehicleModel>{
     
-    public VehicleModelDao() {
+    Session session;
+    
+    public VehicleModelDao(Session s) {
         super(VehicleModel.class);
+        session = s;
     }
 
     @Override

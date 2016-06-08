@@ -21,7 +21,7 @@ import pojo.User;
 public abstract class AbstractDao<T> {
 
     private Class<T> entity;
-    private Session session;
+    protected Session session;
     private Transaction tx;
 
     public AbstractDao(Class<T> t) {
@@ -31,50 +31,37 @@ public abstract class AbstractDao<T> {
 
     public void create(T t) {
         try {
-            startOperation();
-            session.save(t);
-            tx.commit();
+            session.saveOrUpdate(t);
         } catch (HibernateException e) {
             handleException(e);
-        } finally {
-            HibernateFactory.close(session);
         }
     }
 
     public void saveOrUpdate(T t) {
         try {
-            startOperation();
             session.update(t);
             tx.commit();
         } catch (HibernateException e) {
             handleException(e);
-        } finally {
-            HibernateFactory.close(session);
         }
     }
 
     public void delete(T t) {
         try {
-            startOperation();
             session.delete(t);
             tx.commit();
         } catch (HibernateException e) {
             handleException(e);
-        } finally {
-            HibernateFactory.close(session);
         }
     }
 
     protected T find(Class clazz, int id) {
         T obj = null;
         try {
-            startOperation();
             obj = (T) session.load(clazz, id);
             tx.commit();
         } catch (HibernateException e) {
             handleException(e);
-        } finally {
-            HibernateFactory.close(session);
         }
         return obj;
     }
@@ -82,14 +69,11 @@ public abstract class AbstractDao<T> {
     protected List<T> findAll(Class clazz) {
         List<T> objects = null;
         try {
-            startOperation();
             Query query = session.createQuery("from " + clazz.getName());
             objects = query.list();
             tx.commit();
         } catch (HibernateException e) {
             handleException(e);
-        } finally {
-            HibernateFactory.close(session);
         }
         return objects;
     }

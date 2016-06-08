@@ -21,9 +21,9 @@ public class YearDao extends AbstractDao<Year> {
 
     Session session;
 
-    public YearDao() {
+    public YearDao(Session s) {
         super(Year.class);
-        session = HibernateFactory.openSession();
+        session =s;
     }
 
     @Override

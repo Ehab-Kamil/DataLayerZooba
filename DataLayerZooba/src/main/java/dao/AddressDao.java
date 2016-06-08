@@ -26,17 +26,9 @@ public class AddressDao extends AbstractDao<Address> {
 
     Session session;
 
-    public AddressDao() {
+    public AddressDao(Session s) {
         super(Address.class);
-        session = HibernateFactory.openSession();
-    }
-
-    public void create(Address a) throws DataAccessLayerException {
-        super.create(a);
-    }
-
-    public void delete(Address a) {
-        super.delete(a);
+        session = s;
     }
 
     public List<Address> findAll() {
@@ -45,10 +37,6 @@ public class AddressDao extends AbstractDao<Address> {
 
     public Address find(int id) {
         return (Address) super.find(Address.class, id); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public void saveOrUpdate(Address a) {
-        super.saveOrUpdate(a);
     }
 
     public Address findByServiceprovider(String name) {

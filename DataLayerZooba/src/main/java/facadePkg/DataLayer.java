@@ -9,6 +9,7 @@ import Exceptions.DataAccessLayerException;
 import abstractDao.HibernateFactory;
 import dao.*;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import pojo.*;
 
 /**
@@ -44,12 +45,13 @@ public class DataLayer {
         int result = 0;
 
         Session session = HibernateFactory.openSession();
+        Transaction tx = session.beginTransaction();
         try {
-            makeDao = new MakeDao();
-            modelDao = new ModelDao();
-            yearDao = new YearDao();
-            trimDao = new TrimDao();
-            vehicleModelDao = new VehicleModelDao();
+            makeDao = new MakeDao(session);
+            modelDao = new ModelDao(session);
+            yearDao = new YearDao(session);
+            trimDao = new TrimDao(session);
+            vehicleModelDao = new VehicleModelDao(session);
             VehicleModel vehicleModel = new VehicleModel();
             vehicleModel.setModel(model);
             vehicleModel.setTrim(trim);
@@ -66,8 +68,10 @@ public class DataLayer {
             yearDao.create(year);
             trimDao.create(trim);
             vehicleModelDao.create(vehicleModel);
+            tx.commit();
             result = 1;
         } catch (DataAccessLayerException ex) {
+            HibernateFactory.rollback(tx);
             result = 0;
         } finally {
             HibernateFactory.close(session);
