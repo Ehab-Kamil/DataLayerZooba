@@ -24,10 +24,10 @@ public abstract class AbstractDao<T> {
     protected Session session;
     private Transaction tx;
 
-    public AbstractDao(Class<T> t,Session s) {
+    public AbstractDao(Class<T> t, Session s) {
         HibernateFactory.buildIfNeeded();
         entity = t;
-        session=s;
+        session = s;
     }
 
     public void create(T t) {
@@ -41,7 +41,6 @@ public abstract class AbstractDao<T> {
     public void saveOrUpdate(T t) {
         try {
             session.update(t);
-            tx.commit();
         } catch (HibernateException e) {
             handleException(e);
         }
@@ -50,7 +49,6 @@ public abstract class AbstractDao<T> {
     public void delete(T t) {
         try {
             session.delete(t);
-            tx.commit();
         } catch (HibernateException e) {
             handleException(e);
         }
@@ -60,7 +58,6 @@ public abstract class AbstractDao<T> {
         T obj = null;
         try {
             obj = (T) session.load(clazz, id);
-            tx.commit();
         } catch (HibernateException e) {
             handleException(e);
         }
@@ -72,7 +69,6 @@ public abstract class AbstractDao<T> {
         try {
             Query query = session.createQuery("from " + clazz.getName());
             objects = query.list();
-            tx.commit();
         } catch (HibernateException e) {
             handleException(e);
         }
@@ -82,10 +78,7 @@ public abstract class AbstractDao<T> {
     public List<T> findByExample(T t) {
         List<T> objects = null;
         try {
-            startOperation();
-            
             objects = session.createCriteria(t.getClass()).add(Example.create(t).excludeZeroes()).list();
-//            tx.commit();
         } catch (HibernateException e) {
             handleException(e);
         } finally {
