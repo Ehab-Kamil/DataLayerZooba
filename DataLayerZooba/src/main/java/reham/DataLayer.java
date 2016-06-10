@@ -76,8 +76,6 @@ public class DataLayer implements Serializable {
        }
        catch (DataAccessLayerException ex) {
             HibernateFactory.rollback(transaction);
-        } finally {
-            HibernateFactory.close(session);
         }
    }
 }
