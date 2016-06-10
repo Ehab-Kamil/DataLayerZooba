@@ -7,6 +7,7 @@ package webServicesHandlers;
 
 import Exceptions.DataAccessLayerException;
 import abstractDao.HibernateFactory;
+import dao.DeviceDao;
 import dao.MakeDao;
 import dao.ModelDao;
 import dao.TrimDao;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import pojo.Device;
 import pojo.Make;
 import pojo.Model;
 import pojo.Trim;
@@ -66,6 +68,8 @@ public class Handler {
     }
 
     public int register(User u) {
+        session = HibernateFactory.openSession();
+        uDao = new UserDao(session);
         uDao.create(u);
         return 0;
     }
@@ -82,27 +86,30 @@ public class Handler {
     public List<Model> getModelByMake(String make) {
         session = HibernateFactory.openSession();
         ModelDao modelDao = new ModelDao(session);
-        List<Model> result = modelDao.getModelsByMake (make);
-          HibernateFactory.close(session);
-       // HibernateFactory.closeFactory();
+        List<Model> result = modelDao.getModelsByMake(make);
+        HibernateFactory.close(session);
         return result;
     }
 
     public List<Trim> getTrim(String model, String year) {
         session = HibernateFactory.openSession();
         TrimDao trimDao = new TrimDao(session);
-        return trimDao.getTrimByYearAndModel(model, year);
+        List<Trim> lst = trimDao.getTrimByYearAndModel(model, year);
+        HibernateFactory.close(session);
+        return lst;
 
     }
 
     public List<Year> getYear(String model) {
         session = HibernateFactory.openSession();
         YearDao yearDao = new YearDao(session);
-        return yearDao.getYearByModel(model);
+        List<Year> lst = yearDao.getYearByModel(model);
+        HibernateFactory.close(session);
+        return lst;
 
     }
 
-    public boolean addVehicle(String m, String y, String trim, int u_id,String carName,int intialOdemeter) {
+    public boolean addVehicle(String m, String y, String trim, int u_id, String carName, int intialOdemeter) {
 
         boolean result = false;
         session = HibernateFactory.openSession();
@@ -132,25 +139,25 @@ public class Handler {
         if (vms.size() > 0) {
             vm = vms.get(0);
         }
-        UserDao userDao=new UserDao(session);
-        User user=userDao.find(u_id);
-        VehicleDao vehicleDao=new VehicleDao(session);
-        Vehicle vehicle=new Vehicle();
-       vehicle.setCurrentOdemeter(0);
-       vehicle.setIntialOdemeter(intialOdemeter);
-       vehicle.setName(carName);
-       vehicle.setUser(user);
-       vehicle.setVehicleModel(vm);
-       vm.getVehicles().add(vehicle);
-       user.getVehicles().add(vehicle);
-       session.getTransaction().begin();
-       vehicleDao.create(vehicle);
-       userDao.create(user);
-       vmd.create(vm);
-       session.getTransaction().commit();
-       // result=session.getTransaction().wasCommitted();
+        UserDao userDao = new UserDao(session);
+        User user = userDao.find(u_id);
+        VehicleDao vehicleDao = new VehicleDao(session);
+        Vehicle vehicle = new Vehicle();
+        vehicle.setCurrentOdemeter(0);
+        vehicle.setIntialOdemeter(intialOdemeter);
+        vehicle.setName(carName);
+        vehicle.setUser(user);
+        vehicle.setVehicleModel(vm);
+        vm.getVehicles().add(vehicle);
+        user.getVehicles().add(vehicle);
+        session.getTransaction().begin();
+        vehicleDao.create(vehicle);
+        userDao.create(user);
+        vmd.create(vm);
+        session.getTransaction().commit();
+        // result=session.getTransaction().wasCommitted();
         result = true;
-
+        HibernateFactory.close(session);
         return result;
     }
 
@@ -179,8 +186,31 @@ public class Handler {
         return uarr.size() > 0;
     }
 
-    public List<Make> getVehicle() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<Device> getDeviceByUser(int userId) {
+        session = HibernateFactory.openSession();
+        DeviceDao deviceDao = new DeviceDao(session);
+        List<Device> lst = deviceDao.getdevicePerUser(userId);
+        HibernateFactory.close(session);
+        return lst;
     }
 
-}
+    public boolean addDevice(int userId, String token) {
+        Session session = HibernateFactory.openSession();
+        DeviceDao deviceDao = new DeviceDao(session);
+        UserDao userDao = new UserDao(session);
+        User u = userDao.find(userId);
+        try {
+            System.out.println("u "+u);}
+           catch (Exception e) {
+            return false;
+                  } 
+           Device device = new Device(u, token);
+            session.getTransaction().begin();
+            deviceDao.create(device);
+            session.getTransaction().commit();
+            HibernateFactory.close(session);
+            return true;
+        } 
+    }
+
+
