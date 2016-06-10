@@ -54,7 +54,6 @@ public class UserDao extends AbstractDao<User> {
         } catch (HibernateException e) {
             handleException(e);
         } finally {
-            HibernateFactory.close(session);
         }
         return objects;
     }

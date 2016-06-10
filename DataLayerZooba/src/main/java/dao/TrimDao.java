@@ -82,11 +82,11 @@ public class TrimDao extends AbstractDao<Trim> {
         return lst;
     }
 
-    public List<Trim> getTrimByYearAndModel(String year, String model) {
+    public List<Trim> getTrimByYearAndModel(String model, String year) {
         Criteria crt = session.createCriteria(Trim.class, "trim").
                 createAlias("trim.vehicleModels", "vModel")
                 .createAlias("vModel.year", "year")
-                .add(Restrictions.like("year.name", "%" + year + "%"))
+                .add(Restrictions.eq("year.name", Integer.parseInt(year)))
                 .createAlias("vModel.model", "model")
                 .add(Restrictions.like("model.name", "%" + model + "%"));
 
