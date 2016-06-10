@@ -7,6 +7,7 @@ package dao;
 
 import abstractDao.AbstractDao;
 import abstractDao.HibernateFactory;
+import java.io.Serializable;
 import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -19,7 +20,7 @@ import pojo.VehicleModel;
  *
  * @author yoka
  */
-public class ModelFeatureValueDao extends AbstractDao<ModelFeaturesValues> {
+public class ModelFeatureValueDao extends AbstractDao<ModelFeaturesValues>{
 
     Session session;
 
@@ -78,4 +79,8 @@ public class ModelFeatureValueDao extends AbstractDao<ModelFeaturesValues> {
         
         return list;
     }
+     @Override
+    public void saveOrUpdate(ModelFeaturesValues m) {
+        super.saveOrUpdate(m); //To change body of generated methods, choose Tools | Templates.
+    } 
 }
