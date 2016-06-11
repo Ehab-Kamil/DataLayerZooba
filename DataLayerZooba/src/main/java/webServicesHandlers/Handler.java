@@ -162,6 +162,7 @@ public class Handler {
     }
 
     public User loginByEmail(String email, String pass) {
+       session=HibernateFactory.openSession();
         User u = new User();
         u.setEmail(email);
         u.setPassword(pass);
