@@ -165,7 +165,7 @@ public class Handler {
         User u = new User();
         u.setEmail(email);
         u.setPassword(pass);
-//        uDao = new UserDao();
+      uDao = new UserDao(session);
         ArrayList<User> uarr = (ArrayList<User>) uDao.findByExample(u);
         if (uarr.size() > 0) {
             User u1 = uarr.get(0);
