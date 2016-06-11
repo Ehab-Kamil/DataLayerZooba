@@ -82,7 +82,7 @@ public abstract class AbstractDao<T> {
         } catch (HibernateException e) {
             handleException(e);
         } finally {
-            HibernateFactory.close(session);
+           // HibernateFactory.close(session);
         }
         return objects;
     }

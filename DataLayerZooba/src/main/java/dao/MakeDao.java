@@ -9,9 +9,13 @@ import abstractDao.AbstractDao;
 import abstractDao.HibernateFactory;
 import java.util.List;
 import org.hibernate.Criteria;
+import org.hibernate.Hibernate;
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import pojo.Make;
+import pojo.User;
 
 /**
  *
@@ -20,7 +24,19 @@ import pojo.Make;
 public class MakeDao extends AbstractDao<Make> {
 
     public List<Make> findAll() {
-        return super.findAll(Make.class); //To change body of generated methods, choose Tools | Templates.
+       // return super.findAll(Make.class); //To change body of generated methods, choose Tools | Templates.
+     List<Make> objects = null;
+        try {
+            Query query = session.createQuery("from Make");
+            objects = query.list();
+             for (Make object : objects) {
+             Hibernate.initialize(object.getModels());
+                Hibernate.initialize(object.getServiceProviders());
+             }
+        } catch (HibernateException e) {
+            handleException(e);
+        }
+        return objects;
     }
 
     public MakeDao(Session s) {

@@ -36,7 +36,7 @@ public class VehicleDao extends AbstractDao<Vehicle> {
 
     public List<Object[]> getByMake() {
         List<Vehicle> v = new ArrayList();
-        String hql = "select v.name , vm.year, vm.trim, vm.model, ma.name From Vehicle v , VehicleModel vm, Make ma, "
+        String hql = "select v.name , vm.year, vm.trim, vm.model, ma.name ,vm.id From Vehicle v , VehicleModel vm, Make ma, "
                 + "Model mo where v.vehicleModel.id=vm.id "
                 + "and  mo.make.id=ma.id  and vm.model.id=mo.id";
         Query query = session.createQuery(hql);
@@ -56,7 +56,7 @@ public class VehicleDao extends AbstractDao<Vehicle> {
         Query query = session.createQuery(hql).setString(0, name);
 
         v = (Vehicle) query.uniqueResult();
-        HibernateFactory.close(session);
+        
         return v;
     }
 }
