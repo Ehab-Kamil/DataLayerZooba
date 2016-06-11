@@ -115,7 +115,7 @@ public class DataLayer {
         HibernateFactory.close(session);
         return lstServProv.get(0);
         
-    }
+    } 
     
     public void insertServiceProvider(ServiceProvider newServiceProvider) {
         
