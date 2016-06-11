@@ -70,7 +70,10 @@ public class Handler {
     public int register(User u) {
         session = HibernateFactory.openSession();
         uDao = new UserDao(session);
+        session.getTransaction().begin();
         uDao.create(u);
+        session.getTransaction().commit();
+        HibernateFactory.close(session);
         return 0;
     }
 
