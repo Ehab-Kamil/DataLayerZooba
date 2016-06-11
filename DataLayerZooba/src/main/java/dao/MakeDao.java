@@ -24,7 +24,7 @@ public class MakeDao extends AbstractDao<Make> {
     }
 
     public MakeDao(Session s) {
-        super(Make.class,s);
+        super(Make.class, s);
         session = s;
     }
 
@@ -84,5 +84,11 @@ public class MakeDao extends AbstractDao<Make> {
         List<Make> lst = crt.list();
 
         return lst;
+    }
+
+    public Make getUniqueMakeByName(String makeName) {
+        Criteria crt = session.createCriteria(Make.class).add(Restrictions.eq("name", makeName));
+        Make make = (Make) crt.uniqueResult();
+        return make;
     }
 }
