@@ -165,11 +165,11 @@ public class Handler {
     }
 
     public User loginByEmail(String email, String pass) {
-       session=HibernateFactory.openSession();
+        session = HibernateFactory.openSession();
         User u = new User();
         u.setEmail(email);
         u.setPassword(pass);
-      uDao = new UserDao(session);
+        uDao = new UserDao(session);
         ArrayList<User> uarr = (ArrayList<User>) uDao.findByExample(u);
         if (uarr.size() > 0) {
             User u1 = uarr.get(0);
@@ -184,6 +184,9 @@ public class Handler {
 //    }
 
     public boolean emailExists(String email) {
+        session = HibernateFactory.openSession();
+        uDao = new UserDao(session);
+
         User u = new User();
         u.setEmail(email);
         ArrayList<User> uarr = (ArrayList<User>) uDao.findByExample(u);
@@ -199,22 +202,30 @@ public class Handler {
     }
 
     public boolean addDevice(int userId, String token) {
-        Session session = HibernateFactory.openSession();
+        session = HibernateFactory.openSession();
         DeviceDao deviceDao = new DeviceDao(session);
         UserDao userDao = new UserDao(session);
         User u = userDao.find(userId);
         try {
-            System.out.println("u "+u);}
-           catch (Exception e) {
+            System.out.println("u " + u);
+        } catch (Exception e) {
             return false;
-                  } 
-           Device device = new Device(u, token);
-            session.getTransaction().begin();
-            deviceDao.create(device);
-            session.getTransaction().commit();
-            HibernateFactory.close(session);
-            return true;
-        } 
+        }
+        Device device = new Device(u, token);
+        session.getTransaction().begin();
+        deviceDao.create(device);
+        session.getTransaction().commit();
+        HibernateFactory.close(session);
+        return true;
     }
 
-
+    public void insertPictureToUserAccount(String image, int userId) {
+        session = HibernateFactory.openSession();
+        uDao = new UserDao(session);
+        User user = uDao.find(userId);
+        user.setImage(image);
+        session.getTransaction().begin();
+        uDao.create(user);
+        session.getTransaction().commit();
+    }
+}
