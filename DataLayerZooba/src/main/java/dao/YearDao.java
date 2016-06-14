@@ -10,6 +10,7 @@ import abstractDao.HibernateFactory;
 import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import pojo.Year;
 
@@ -61,6 +62,7 @@ public class YearDao extends AbstractDao<Year> {
                 createAlias("year.vehicleModels", "vModel")
                 .createAlias("vModel.model", "model")
                 .add(Restrictions.like("model.name", "%" + model + "%"));
+             crt.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         List<Year> lst = crt.list();
 
         return lst;

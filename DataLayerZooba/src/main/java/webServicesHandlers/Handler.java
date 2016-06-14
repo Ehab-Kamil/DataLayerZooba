@@ -28,6 +28,7 @@ import pojo.User;
 import pojo.Vehicle;
 import pojo.VehicleModel;
 import pojo.Year;
+import pojo.Vehicle;
 
 /**
  *
@@ -112,7 +113,7 @@ public class Handler {
 
     }
 
-    public boolean addVehicle(String m, String y, String trim, int u_id, String carName, int intialOdemeter) {
+    public Vehicle addVehicle(String m, String y, String trim, int u_id, String carName, int intialOdemeter) {
 
         boolean result = false;
         session = HibernateFactory.openSession();
@@ -159,9 +160,10 @@ public class Handler {
         vmd.create(vm);
         session.getTransaction().commit();
         // result=session.getTransaction().wasCommitted();
-        result = true;
+        Vehicle v=vehicleDao.getVehicleByName(carName);
+        
         HibernateFactory.close(session);
-        return result;
+        return v;
     }
 
     public User loginByEmail(String email, String pass) {
@@ -227,5 +229,13 @@ public class Handler {
         session.getTransaction().begin();
         uDao.create(user);
         session.getTransaction().commit();
+    }
+
+    public List<Vehicle> getVehiclesPerUser(int userId) {
+        session = HibernateFactory.openSession();
+      VehicleDao vehicleDao=new VehicleDao(session);
+     List<Vehicle> list= vehicleDao.getVehicleByUser(userId);
+     HibernateFactory.close(session);
+     return list;
     }
 }
