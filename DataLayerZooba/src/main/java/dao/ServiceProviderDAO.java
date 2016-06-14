@@ -125,5 +125,16 @@ public class ServiceProviderDAO extends AbstractDao<ServiceProvider> {
 
         return lst;
     }
+    
+   public List<Object[]> getServiceProviderInfo()
+   {
+       List<Object[]> list;
+       String hql="select s.name, s.email, s.website,concat(a.street,',',a.city,',',a.country) as Address, sps.service ,s.id "
+               + "from ServiceProvider s, ServiceProviderServices sps , Address a "
+               + "where s.id=sps.serviceProvider.id and s.address.id=a.id";
+       Query q=session.createQuery(hql);
+       list=q.list();
+       return list;
+   }
 
 }
