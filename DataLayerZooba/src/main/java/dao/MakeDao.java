@@ -24,15 +24,15 @@ import pojo.User;
 public class MakeDao extends AbstractDao<Make> {
 
     public List<Make> findAll() {
-       // return super.findAll(Make.class); //To change body of generated methods, choose Tools | Templates.
-     List<Make> objects = null;
+        // return super.findAll(Make.class); //To change body of generated methods, choose Tools | Templates.
+        List<Make> objects = null;
         try {
             Query query = session.createQuery("from Make");
             objects = query.list();
-             for (Make object : objects) {
-             Hibernate.initialize(object.getModels());
+            for (Make object : objects) {
+                Hibernate.initialize(object.getModels());
                 Hibernate.initialize(object.getServiceProviders());
-             }
+            }
         } catch (HibernateException e) {
             handleException(e);
         }
@@ -44,28 +44,16 @@ public class MakeDao extends AbstractDao<Make> {
         session = s;
     }
 
-    @Override
-    public List<Make> findByExample(Make t) {
-        return super.findByExample(t); //To change body of generated methods, choose Tools | Templates.
-    }
-
     public Make find(int id) {
         return super.find(Make.class, id); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void delete(Make t) {
-        super.delete(t); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void saveOrUpdate(Make t) {
-        super.saveOrUpdate(t); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public void create(Make t) {
-        super.create(t); //To change body of generated methods, choose Tools | Templates.
+        Make make = getUniqueMakeByName(t.getName());
+        if (make == null) {
+            super.create(t); //To change body of generated methods, choose Tools | Templates.
+        }
     }
 
     public List<Make> getMakeByName(String name) {
