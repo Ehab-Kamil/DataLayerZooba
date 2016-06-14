@@ -22,13 +22,8 @@ public class ModelDao extends AbstractDao<Model> {
     Session session;
 
     public ModelDao(Session s) {
-        super(Model.class,s);
-        session =s;
-    }
-
-    @Override
-    public List<Model> findByExample(Model t) {
-        return super.findByExample(t); //To change body of generated methods, choose Tools | Templates.
+        super(Model.class, s);
+        session = s;
     }
 
     public Model find(int id) {
@@ -36,18 +31,11 @@ public class ModelDao extends AbstractDao<Model> {
     }
 
     @Override
-    public void delete(Model t) {
-        super.delete(t); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void saveOrUpdate(Model t) {
-        super.saveOrUpdate(t); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public void create(Model t) {
-        super.create(t); //To change body of generated methods, choose Tools | Templates.
+        Model model = getUniqueModelByName(t.getName());
+        if (model == null) {
+            super.create(t);
+        }
     }
 
     public List<Model> getModelByMakeAndName(String make, String part) {
@@ -98,5 +86,12 @@ public class ModelDao extends AbstractDao<Model> {
                 .add(Restrictions.like("trim.name", "%" + trim + "%"));
         List<Model> lst = crt.list();
         return lst;
+    }
+
+    public Model getUniqueModelByName(String modelName) {
+        Criteria crt = session.createCriteria(Model.class).add(Restrictions.eq("name", modelName));
+        Model model = (Model) crt.uniqueResult();
+        return model;
+
     }
 }

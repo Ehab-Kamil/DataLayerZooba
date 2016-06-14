@@ -23,8 +23,8 @@ public class YearDao extends AbstractDao<Year> {
     Session session;
 
     public YearDao(Session s) {
-        super(Year.class,s);
-        session =s;
+        super(Year.class, s);
+        session = s;
     }
 
     @Override
@@ -37,26 +37,17 @@ public class YearDao extends AbstractDao<Year> {
     }
 
     @Override
-    public void delete(Year t) {
-        super.delete(t); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void saveOrUpdate(Year t) {
-        super.saveOrUpdate(t); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public void create(Year t) {
-        super.create(t); //To change body of generated methods, choose Tools | Templates.
+        Year year = getYearByName(t.getName());
+        if (year == null) {
+            super.create(t); //To change body of generated methods, choose Tools | Templates.
+        }
     }
 
     public List<Year> findAll() {
         return super.findAll(Year.class); //To change body of generated methods, choose Tools | Templates.
     }
 
-    
-    
     public List<Year> getYearByModel(String model) {
         Criteria crt = session.createCriteria(Year.class, "year").
                 createAlias("year.vehicleModels", "vModel")
@@ -89,5 +80,11 @@ public class YearDao extends AbstractDao<Year> {
         List<Year> lst = crt.list();
 
         return lst;
+    }
+
+    public Year getYearByName(int name) {
+        Criteria crt = session.createCriteria(Year.class, "year").
+                add(Restrictions.eq("name", name));
+        return (Year) crt.uniqueResult();
     }
 }
