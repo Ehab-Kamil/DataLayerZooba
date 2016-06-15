@@ -68,14 +68,15 @@ public class Handler {
         return uarr.size() > 0;
     }
 
-    public int register(User u) {
+    public User register(User u) {
         session = HibernateFactory.openSession();
         uDao = new UserDao(session);
         session.getTransaction().begin();
         uDao.create(u);
         session.getTransaction().commit();
+       u=uDao.getUser(u);
         HibernateFactory.close(session);
-        return 0;
+        return u;
     }
 
     public List<Make> getMake() {
@@ -237,5 +238,23 @@ public class Handler {
      List<Vehicle> list= vehicleDao.getVehicleByUser(userId);
      HibernateFactory.close(session);
      return list;
+    }
+
+    public User loginWithFacebook(String email) {
+        session = HibernateFactory.openSession();
+        uDao = new UserDao(session);
+        User u = new User();
+        u.setEmail(email);
+        u.setPassword("fbp");
+
+        ArrayList<User> uarr = (ArrayList<User>) uDao.findByExample(u);
+        if (uarr.size() > 0) {
+            User u1 = uarr.get(0);
+            HibernateFactory.close(session);
+            return u1;
+        } else {
+             HibernateFactory.close(session);
+            return null;
+        }
     }
 }
