@@ -68,14 +68,15 @@ public class Handler {
         return uarr.size() > 0;
     }
 
-    public int register(User u) {
+    public User register(User u) {
         session = HibernateFactory.openSession();
         uDao = new UserDao(session);
         session.getTransaction().begin();
         uDao.create(u);
         session.getTransaction().commit();
+       u=uDao.getUser(u);
         HibernateFactory.close(session);
-        return 0;
+        return u;
     }
 
     public List<Make> getMake() {
@@ -160,10 +161,10 @@ public class Handler {
         vmd.create(vm);
         session.getTransaction().commit();
         // result=session.getTransaction().wasCommitted();
-        Vehicle v=vehicleDao.getVehicleByName(carName);
+       List<Vehicle>  vs=vehicleDao.findByExample(vehicle);
         
         HibernateFactory.close(session);
-        return v;
+        return vs.get(0);
     }
 
     public User loginByEmail(String email, String pass) {
@@ -237,5 +238,32 @@ public class Handler {
      List<Vehicle> list= vehicleDao.getVehicleByUser(userId);
      HibernateFactory.close(session);
      return list;
+    }
+
+    public User loginWithFacebook(String email) {
+        session = HibernateFactory.openSession();
+        uDao = new UserDao(session);
+        User u = new User();
+        u.setEmail(email);
+        u.setPassword("fbp");
+
+        ArrayList<User> uarr = (ArrayList<User>) uDao.findByExample(u);
+        if (uarr.size() > 0) {
+            User u1 = uarr.get(0);
+            HibernateFactory.close(session);
+            return u1;
+        } else {
+             HibernateFactory.close(session);
+            return null;
+        }
+    }
+
+    public Make getMakeByModel(Integer id) {
+     session = HibernateFactory.openSession();
+     MakeDao makeDao=new MakeDao(session);
+     ModelDao md=new ModelDao(session);
+    Model m= md.find(id);
+     List<Make> mks=makeDao.getMakebyModel(m.getName());
+     return mks.get(0);
     }
 }

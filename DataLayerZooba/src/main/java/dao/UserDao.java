@@ -24,7 +24,7 @@ public class UserDao extends AbstractDao<User> {
     Session session;
 
     public UserDao(Session s) {
-        super(User.class,s);
+        super(User.class, s);
         session = s;
     }
 
@@ -58,4 +58,22 @@ public class UserDao extends AbstractDao<User> {
         return objects;
     }
 
+    public User getUser(User u) {
+        User object = null;
+        try {
+            startOperation();
+            session = HibernateFactory.openSession();
+
+            object = (User) session.createCriteria(User.class).add(Example.create(u).excludeZeroes()).uniqueResult();
+
+            Hibernate.initialize(object.getDevices());
+            Hibernate.initialize(object.getVehicles());
+            Hibernate.initialize(object.getVehicles_1());
+
+//            tx.commit();
+        } catch (HibernateException e) {
+            handleException(e);
+        }
+        return object;
+    }
 }
