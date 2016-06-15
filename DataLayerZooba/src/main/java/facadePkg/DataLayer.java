@@ -192,6 +192,7 @@ public class DataLayer {
             result.add(iteratedMake);
         }
         Set<Make> makeSet = new HashSet<>(result);
+//        serviceProvider.setMakes(makeSet);
         serviceProviderDAO.saveOrUpdate(serviceProvider);
         transaction.commit();
         HibernateFactory.close(session);
