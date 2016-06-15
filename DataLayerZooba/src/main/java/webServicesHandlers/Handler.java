@@ -161,10 +161,10 @@ public class Handler {
         vmd.create(vm);
         session.getTransaction().commit();
         // result=session.getTransaction().wasCommitted();
-        Vehicle v=vehicleDao.getVehicleByName(carName);
+       List<Vehicle>  vs=vehicleDao.findByExample(vehicle);
         
         HibernateFactory.close(session);
-        return v;
+        return vs.get(0);
     }
 
     public User loginByEmail(String email, String pass) {
@@ -256,5 +256,14 @@ public class Handler {
              HibernateFactory.close(session);
             return null;
         }
+    }
+
+    public Make getMakeByModel(Integer id) {
+     session = HibernateFactory.openSession();
+     MakeDao makeDao=new MakeDao(session);
+     ModelDao md=new ModelDao(session);
+    Model m= md.find(id);
+     List<Make> mks=makeDao.getMakebyModel(m.getName());
+     return mks.get(0);
     }
 }
