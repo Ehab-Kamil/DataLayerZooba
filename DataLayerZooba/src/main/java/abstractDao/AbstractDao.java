@@ -50,7 +50,7 @@ public abstract class AbstractDao<T> {
         try {
             session.delete(t);
         } catch (HibernateException e) {
-//            handleException(e);
+            handleException(e);
         }
     }
 
