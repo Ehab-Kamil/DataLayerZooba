@@ -315,4 +315,16 @@ public class Handler {
         HibernateFactory.close(session);
         return result;
     }
+
+    public void insertImageToTrip(String image, int tripId) {
+        session = HibernateFactory.openSession();
+        TripDAO tripDAO = new TripDAO(session);
+
+        Trips trips = tripDAO.find(tripId);
+        trips.setImage(image);
+        session.getTransaction().begin();
+        tripDAO.create(trips);
+        session.getTransaction().commit();
+
+    }
 }
