@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import pojo.*;
@@ -249,22 +250,65 @@ public class DataLayer {
         return results;
     }
 
-    public void setServicesForServiceProvider(String[] selectedServices, ServiceProvider serviceProvider,Date serviceFrom,Date serviceTo) {
+    public void setServicesForServiceProvider(String[] selectedServices, ServiceProvider serviceProvider, Date serviceFrom, Date serviceTo) {
 
         session = HibernateFactory.openSession();
         transaction = session.beginTransaction();
         ServiceDAO serviceDAO = new ServiceDAO(session);
         ServiceProviderDAO serviceProviderDAO = new ServiceProviderDAO(session);
         ServiceProviderServicesDao serviceProviderServicesDao = new ServiceProviderServicesDao(session);
-        
+
         for (String serviceName : selectedServices) {
             Service iteratedService = serviceDAO.getUniqueServiceByName(serviceName);
-            ServiceProviderServices serviceProviderServices = new ServiceProviderServices(iteratedService, serviceProvider,serviceFrom,serviceTo);
+            ServiceProviderServices serviceProviderServices = new ServiceProviderServices(iteratedService, serviceProvider, serviceFrom, serviceTo);
             serviceProviderServicesDao.create(serviceProviderServices);
         }
-        
+
         transaction.commit();
         HibernateFactory.close(session);
     }
 
+    public List<User> getAllUsers() {
+        session = HibernateFactory.openSession();
+
+        userDao = new UserDao(session);
+        List<User> users = userDao.findAll();
+        HibernateFactory.close(session);
+        return users;
+
+    }
+
+    public int suspendUser(User u) {
+        session = HibernateFactory.openSession();
+
+        userDao = new UserDao(session);
+        u.setSuspended(1);
+        try {
+            session.getTransaction().begin();
+            userDao.create(u);
+            session.getTransaction().commit();
+            return 1;
+        } catch (HibernateException e) {
+            return 0;
+        } finally {
+            HibernateFactory.close(session);
+        }
+    }
+
+    public int unsuspendUser(User u) {
+       session = HibernateFactory.openSession();
+
+        userDao = new UserDao(session);
+        u.setSuspended(0);
+        try {
+            session.getTransaction().begin();
+            userDao.create(u);
+            session.getTransaction().commit();
+            return 1;
+        } catch (HibernateException e) {
+            return 0;
+        } finally {
+            HibernateFactory.close(session);
+        }
+    }
 }
