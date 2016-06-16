@@ -7,10 +7,12 @@ package webServicesHandlers;
 
 import Exceptions.DataAccessLayerException;
 import abstractDao.HibernateFactory;
+import dao.CoordinatesDAO;
 import dao.DeviceDao;
 import dao.MakeDao;
 import dao.ModelDao;
 import dao.TrimDao;
+import dao.TripDAO;
 import dao.UserDao;
 import dao.VehicleDao;
 import dao.VehicleModelDao;
@@ -20,14 +22,17 @@ import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import pojo.Coordinates;
 import pojo.Device;
 import pojo.Make;
 import pojo.Model;
 import pojo.Trim;
+import pojo.Trips;
 import pojo.User;
 import pojo.Vehicle;
 import pojo.VehicleModel;
 import pojo.Year;
+import pojo.Vehicle;
 
 /**
  *
@@ -67,14 +72,15 @@ public class Handler {
         return uarr.size() > 0;
     }
 
-    public int register(User u) {
+    public User register(User u) {
         session = HibernateFactory.openSession();
         uDao = new UserDao(session);
         session.getTransaction().begin();
         uDao.create(u);
         session.getTransaction().commit();
+        u = uDao.getUser(u);
         HibernateFactory.close(session);
-        return 0;
+        return u;
     }
 
     public List<Make> getMake() {
@@ -112,7 +118,7 @@ public class Handler {
 
     }
 
-    public boolean addVehicle(String m, String y, String trim, int u_id, String carName, int intialOdemeter) {
+    public Vehicle addVehicle(String m, String y, String trim, int u_id, String carName, int intialOdemeter) {
 
         boolean result = false;
         session = HibernateFactory.openSession();
@@ -159,17 +165,18 @@ public class Handler {
         vmd.create(vm);
         session.getTransaction().commit();
         // result=session.getTransaction().wasCommitted();
-        result = true;
+        List<Vehicle> vs = vehicleDao.findByExample(vehicle);
+
         HibernateFactory.close(session);
-        return result;
+        return vs.get(0);
     }
 
     public User loginByEmail(String email, String pass) {
-       session=HibernateFactory.openSession();
+        session = HibernateFactory.openSession();
         User u = new User();
         u.setEmail(email);
         u.setPassword(pass);
-      uDao = new UserDao(session);
+        uDao = new UserDao(session);
         ArrayList<User> uarr = (ArrayList<User>) uDao.findByExample(u);
         if (uarr.size() > 0) {
             User u1 = uarr.get(0);
@@ -184,6 +191,9 @@ public class Handler {
 //    }
 
     public boolean emailExists(String email) {
+        session = HibernateFactory.openSession();
+        uDao = new UserDao(session);
+
         User u = new User();
         u.setEmail(email);
         ArrayList<User> uarr = (ArrayList<User>) uDao.findByExample(u);
@@ -199,22 +209,110 @@ public class Handler {
     }
 
     public boolean addDevice(int userId, String token) {
-        Session session = HibernateFactory.openSession();
+        session = HibernateFactory.openSession();
         DeviceDao deviceDao = new DeviceDao(session);
         UserDao userDao = new UserDao(session);
         User u = userDao.find(userId);
         try {
-            System.out.println("u "+u);}
-           catch (Exception e) {
+            System.out.println("u " + u);
+        } catch (Exception e) {
             return false;
-                  } 
-           Device device = new Device(u, token);
-            session.getTransaction().begin();
-            deviceDao.create(device);
-            session.getTransaction().commit();
-            HibernateFactory.close(session);
-            return true;
-        } 
+        }
+        Device device = new Device(u, token);
+        session.getTransaction().begin();
+        deviceDao.create(device);
+        session.getTransaction().commit();
+        HibernateFactory.close(session);
+        return true;
     }
 
+    public void insertPictureToUserAccount(String image, int userId) {
+        session = HibernateFactory.openSession();
+        uDao = new UserDao(session);
+        User user = uDao.find(userId);
+        user.setImage(image);
+        session.getTransaction().begin();
+        uDao.create(user);
+        session.getTransaction().commit();
+    }
 
+    public List<Vehicle> getVehiclesPerUser(int userId) {
+        session = HibernateFactory.openSession();
+        VehicleDao vehicleDao = new VehicleDao(session);
+        List<Vehicle> list = vehicleDao.getVehicleByUser(userId);
+        HibernateFactory.close(session);
+        return list;
+    }
+
+    public User loginWithFacebook(String email) {
+        session = HibernateFactory.openSession();
+        uDao = new UserDao(session);
+        User u = new User();
+        u.setEmail(email);
+        u.setPassword("fbp");
+
+        ArrayList<User> uarr = (ArrayList<User>) uDao.findByExample(u);
+        if (uarr.size() > 0) {
+            User u1 = uarr.get(0);
+            HibernateFactory.close(session);
+            return u1;
+        } else {
+            HibernateFactory.close(session);
+            return null;
+        }
+    }
+
+    public Make getMakeByModel(Integer id) {
+        session = HibernateFactory.openSession();
+        MakeDao makeDao = new MakeDao(session);
+        ModelDao md = new ModelDao(session);
+        Model m = md.find(id);
+        List<Make> mks = makeDao.getMakebyModel(m.getName());
+        return mks.get(0);
+    }
+
+    public Trips addTrip(int initialOdemeter, int coveredMilage, int vehicleId) {
+        session = HibernateFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        TripDAO tripDAO = new TripDAO(session);
+        VehicleDao vehicleDao = new VehicleDao(session);
+
+        Trips trip = new Trips();
+        trip.setIntialOdemeter(initialOdemeter);
+        trip.setCoveredMilage(coveredMilage);
+
+        Vehicle vehicle = vehicleDao.find(vehicleId);
+        trip.setVehicle(vehicle);
+
+        tripDAO.create(trip);
+        Trips result = tripDAO.findByExample(trip).get(0);
+        transaction.commit();
+        HibernateFactory.close(session);
+
+        return result;
+    }
+
+    public Coordinates addCoordinatesToTrip(float longitude, float latitude, int tripId) {
+        session = HibernateFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+
+        CoordinatesDAO coordinatesDAO = new CoordinatesDAO(session);
+        TripDAO tripDAO = new TripDAO(session);
+
+        Trips trips = tripDAO.find(tripId);
+        Coordinates coordinates = new Coordinates();
+
+        coordinates.setLatitude(latitude);
+        coordinates.setLongitude(longitude);
+        coordinates.setTrips(trips);
+
+        coordinatesDAO.create(coordinates);
+
+        Coordinates result = coordinatesDAO.findByExample(coordinates).get(0);
+
+        transaction.commit();
+
+        HibernateFactory.close(session);
+        return result;
+    }
+}

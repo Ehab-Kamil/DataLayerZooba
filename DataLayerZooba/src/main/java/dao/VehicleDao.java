@@ -11,10 +11,13 @@ import abstractDao.HibernateFactory;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
+import pojo.Make;
+import pojo.User;
 import pojo.Vehicle;
-import pojo.VehicleModel;
 import pojo.Year;
 
 /**
@@ -58,5 +61,13 @@ public class VehicleDao extends AbstractDao<Vehicle> {
         v = (Vehicle) query.uniqueResult();
         
         return v;
+    }
+
+    public List<Vehicle> getVehicleByUser(int userId) {
+      Criteria criteria=session.createCriteria(Vehicle.class, "vehicle")
+              .createAlias("vehicle.users", "user")
+              .add(Restrictions.eq("user.id", userId));
+      List<Vehicle> list=criteria.list();
+               return list;
     }
 }

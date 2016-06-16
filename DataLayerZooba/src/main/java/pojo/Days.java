@@ -54,7 +54,7 @@ public class Days  implements java.io.Serializable {
     }
 
     
-    @Column(name="name", unique=true, nullable=false, length=12)
+    @Column(name="name", unique=true, nullable=false, length=120)
     public String getName() {
         return this.name;
     }

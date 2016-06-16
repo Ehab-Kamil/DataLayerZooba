@@ -71,4 +71,11 @@ public class ServiceDAO extends AbstractDao<Service> {
 
         return (ArrayList<ServiceProviderServices>) results;
     }
+
+    public Service getUniqueServiceByName(String serviceName) {
+        Criteria crt = session.createCriteria(Service.class).add(Restrictions.eq("name", serviceName));
+        Service service = (Service) crt.uniqueResult();
+        return service;
+    
+    }
 }
