@@ -7,10 +7,12 @@ package webServicesHandlers;
 
 import Exceptions.DataAccessLayerException;
 import abstractDao.HibernateFactory;
+import dao.CoordinatesDAO;
 import dao.DeviceDao;
 import dao.MakeDao;
 import dao.ModelDao;
 import dao.TrimDao;
+import dao.TripDAO;
 import dao.UserDao;
 import dao.VehicleDao;
 import dao.VehicleModelDao;
@@ -20,10 +22,12 @@ import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import pojo.Coordinates;
 import pojo.Device;
 import pojo.Make;
 import pojo.Model;
 import pojo.Trim;
+import pojo.Trips;
 import pojo.User;
 import pojo.Vehicle;
 import pojo.VehicleModel;
@@ -74,7 +78,7 @@ public class Handler {
         session.getTransaction().begin();
         uDao.create(u);
         session.getTransaction().commit();
-       u=uDao.getUser(u);
+        u = uDao.getUser(u);
         HibernateFactory.close(session);
         return u;
     }
@@ -161,8 +165,8 @@ public class Handler {
         vmd.create(vm);
         session.getTransaction().commit();
         // result=session.getTransaction().wasCommitted();
-       List<Vehicle>  vs=vehicleDao.findByExample(vehicle);
-        
+        List<Vehicle> vs = vehicleDao.findByExample(vehicle);
+
         HibernateFactory.close(session);
         return vs.get(0);
     }
@@ -234,10 +238,10 @@ public class Handler {
 
     public List<Vehicle> getVehiclesPerUser(int userId) {
         session = HibernateFactory.openSession();
-      VehicleDao vehicleDao=new VehicleDao(session);
-     List<Vehicle> list= vehicleDao.getVehicleByUser(userId);
-     HibernateFactory.close(session);
-     return list;
+        VehicleDao vehicleDao = new VehicleDao(session);
+        List<Vehicle> list = vehicleDao.getVehicleByUser(userId);
+        HibernateFactory.close(session);
+        return list;
     }
 
     public User loginWithFacebook(String email) {
@@ -253,17 +257,62 @@ public class Handler {
             HibernateFactory.close(session);
             return u1;
         } else {
-             HibernateFactory.close(session);
+            HibernateFactory.close(session);
             return null;
         }
     }
 
     public Make getMakeByModel(Integer id) {
-     session = HibernateFactory.openSession();
-     MakeDao makeDao=new MakeDao(session);
-     ModelDao md=new ModelDao(session);
-    Model m= md.find(id);
-     List<Make> mks=makeDao.getMakebyModel(m.getName());
-     return mks.get(0);
+        session = HibernateFactory.openSession();
+        MakeDao makeDao = new MakeDao(session);
+        ModelDao md = new ModelDao(session);
+        Model m = md.find(id);
+        List<Make> mks = makeDao.getMakebyModel(m.getName());
+        return mks.get(0);
+    }
+
+    public Trips addTrip(int initialOdemeter, int coveredMilage, int vehicleId) {
+        session = HibernateFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        TripDAO tripDAO = new TripDAO(session);
+        VehicleDao vehicleDao = new VehicleDao(session);
+
+        Trips trip = new Trips();
+        trip.setIntialOdemeter(initialOdemeter);
+        trip.setCoveredMilage(coveredMilage);
+
+        Vehicle vehicle = vehicleDao.find(vehicleId);
+        trip.setVehicle(vehicle);
+
+        tripDAO.create(trip);
+        Trips result = tripDAO.findByExample(trip).get(0);
+        transaction.commit();
+        HibernateFactory.close(session);
+
+        return result;
+    }
+
+    public Coordinates addCoordinatesToTrip(float longitude, float latitude, int tripId) {
+        session = HibernateFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+
+        CoordinatesDAO coordinatesDAO = new CoordinatesDAO(session);
+        TripDAO tripDAO = new TripDAO(session);
+
+        Trips trips = tripDAO.find(tripId);
+        Coordinates coordinates = new Coordinates();
+
+        coordinates.setLatitude(latitude);
+        coordinates.setLongitude(longitude);
+        coordinates.setTrips(trips);
+
+        coordinatesDAO.create(coordinates);
+
+        Coordinates result = coordinatesDAO.findByExample(coordinates).get(0);
+
+        transaction.commit();
+
+        HibernateFactory.close(session);
+        return result;
     }
 }
