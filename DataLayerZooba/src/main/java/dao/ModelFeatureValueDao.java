@@ -10,6 +10,7 @@ import abstractDao.HibernateFactory;
 import java.io.Serializable;
 import java.util.List;
 import org.hibernate.Criteria;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import pojo.CarFeatures;
@@ -50,7 +51,11 @@ public class ModelFeatureValueDao extends AbstractDao<ModelFeaturesValues>{
                 createAlias("modelf.vehicleModels", "vModel")
                 .add(Restrictions.eq("vModel.model", vModel));
         List<ModelFeaturesValues> lst = crt.list();
-
+        for(ModelFeaturesValues m:lst)
+        {
+            Hibernate.initialize(m.getCarFeatures().getName());
+            Hibernate.initialize(m.getValue());
+        }
         return lst;
     }
 
@@ -79,8 +84,8 @@ public class ModelFeatureValueDao extends AbstractDao<ModelFeaturesValues>{
         
         return list;
     }
-     @Override
-    public void saveOrUpdate(ModelFeaturesValues m) {
-        super.saveOrUpdate(m); //To change body of generated methods, choose Tools | Templates.
-    } 
+//     @Override
+//    public void saveOrUpdate(ModelFeaturesValues m) {
+//        super.saveOrUpdate(m); //To change body of generated methods, choose Tools | Templates.
+//    } 
 }

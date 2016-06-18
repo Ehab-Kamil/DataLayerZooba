@@ -5,8 +5,12 @@
  */
 package dao;
 
+import Exceptions.DataAccessLayerException;
 import abstractDao.AbstractDao;
 import java.util.List;
+import org.hibernate.Hibernate;
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import pojo.VehicleModel;
 
@@ -37,14 +41,42 @@ public class VehicleModelDao extends AbstractDao<VehicleModel>{
         super.delete(t); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    public void saveOrUpdate(VehicleModel t) {
-        super.saveOrUpdate(t); //To change body of generated methods, choose Tools | Templates.
-    }
+    
 
     @Override
     public void create(VehicleModel t) {
         super.create(t); //To change body of generated methods, choose Tools | Templates.
+    }
+       public List<VehicleModel> findAll() throws DataAccessLayerException {
+         List<VehicleModel> objects = null;
+        try {
+            Query query = session.createQuery("from  VehicleModel");
+            objects = query.list();
+            for(VehicleModel vm:objects)
+            {
+            Hibernate.initialize(vm.getModel());
+            Hibernate.initialize(vm.getTrim());
+            Hibernate.initialize(vm.getYear());
+            Hibernate.initialize(vm.getModel().getMake());
+            }
+        } catch (HibernateException e) {
+            handleException(e);
+        }
+        return objects; 
+       }
+     public List<VehicleModel> getByVehicleModelId(int id) {
+        String hql = "from VehicleModel v "
+                + "where v.id=?";
+        Query query = session.createQuery(hql).setInteger(0, id);
+        List<VehicleModel> result = query.list();
+        for(VehicleModel v:result)
+        {
+            Hibernate.initialize(v.getModel());
+            Hibernate.initialize(v.getYear());
+            Hibernate.initialize(v.getTrim());
+            Hibernate.initialize(v.getModel().getMake());
+        }
+        return result;
     }
     
     

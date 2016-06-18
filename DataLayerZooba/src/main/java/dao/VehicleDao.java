@@ -36,6 +36,11 @@ public class VehicleDao extends AbstractDao<Vehicle> {
     public Vehicle find(int id) throws DataAccessLayerException {
         return super.find(Vehicle.class, id); //To change body of generated methods, choose Tools | Templates.
     }
+    
+     public List<Vehicle> findAll()
+    {
+        return super.findAll(Vehicle.class);   
+    }
 
     public List<Object[]> getByMake() {
         List<Vehicle> v = new ArrayList();
