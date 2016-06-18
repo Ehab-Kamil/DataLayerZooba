@@ -7,7 +7,9 @@ package facadePkg;
 
 import Exceptions.DataAccessLayerException;
 import Utils.MailSender;
+import DTO.TypeAndUnit;
 import abstractDao.HibernateFactory;
+import com.sun.tools.internal.xjc.api.TypeAndAnnotation;
 import dao.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -78,7 +80,7 @@ public class DataLayer {
             transaction.commit();
             result = 1;
         } catch (DataAccessLayerException ex) {
-            HibernateFactory.rollback(transaction);
+//            HibernateFactory.rollback(transaction);
             result = 0;
         } finally {
             HibernateFactory.close(session);
@@ -296,7 +298,7 @@ public class DataLayer {
     }
 
     public int unsuspendUser(User u) {
-       session = HibernateFactory.openSession();
+        session = HibernateFactory.openSession();
 
         userDao = new UserDao(session);
         u.setSuspended(0);
@@ -310,5 +312,47 @@ public class DataLayer {
         } finally {
             HibernateFactory.close(session);
         }
+    }
+
+    public void insertService(String name, List<TypeAndUnit> typeAndUnits) {
+
+        session = HibernateFactory.openSession();
+        transaction = session.beginTransaction();
+        ServiceDAO serviceDAO = new ServiceDAO(session);
+
+        Service service = new Service(name);
+        serviceDAO.create(service);
+
+        service = serviceDAO.getUniqueServiceByName(name);
+        typeDao = new TypeDao(session);
+        measuringUnitDao = new MeasuringUnitDao(session);
+        for (TypeAndUnit tau : typeAndUnits) {
+            Type type = new Type();
+            type.setName(tau.getTypeName());
+            type.setService(service);
+            type.setMeasuringUnit(measuringUnitDao.getByName(tau.getUnitName()));
+            this.typeDao.create(type);
+
+        }
+        transaction.commit();
+        HibernateFactory.close(session);
+    }
+
+    public List<String> getAllUnits() {
+        List<String> result = new ArrayList<>();
+
+        session = HibernateFactory.openSession();
+        MeasuringUnitDao measuringUnitDao = new MeasuringUnitDao(session);
+        List<MeasuringUnit> lsMeasuringUnits = measuringUnitDao.findAll();
+        lsMeasuringUnits.stream().forEach((unit) -> {
+            result.add(unit.getName());
+        });
+        HibernateFactory.close(session);
+        return result;
+    }
+
+    public void insertTypeForService(List<TypeAndUnit> selectedType, int serviceId) {
+        session = HibernateFactory.openSession();
+
     }
 }
