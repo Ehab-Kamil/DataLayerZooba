@@ -148,4 +148,10 @@ list.stream().forEach((sp1) -> {
         return list;
     }
 
+    public List<ServiceProvider>  getMainServiceProviders() {
+      Criteria criteria=session.createCriteria(ServiceProvider.class,"sp")
+              .add(Restrictions.isNull("sp.serviceProvider"));
+        return criteria.list();
+    }
+
 }
