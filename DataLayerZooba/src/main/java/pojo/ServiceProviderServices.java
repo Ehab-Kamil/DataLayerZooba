@@ -58,7 +58,7 @@ public class ServiceProviderServices  implements java.io.Serializable {
         this.id = id;
     }
 
-@ManyToOne(fetch=FetchType.LAZY)
+@ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="service_id", nullable=false)
     public Service getService() {
         return this.service;
@@ -68,7 +68,7 @@ public class ServiceProviderServices  implements java.io.Serializable {
         this.service = service;
     }
 
-@ManyToOne(fetch=FetchType.LAZY)
+@ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="service_provider_id", nullable=false)
     public ServiceProvider getServiceProvider() {
         return this.serviceProvider;

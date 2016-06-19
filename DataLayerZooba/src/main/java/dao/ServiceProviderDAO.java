@@ -7,9 +7,11 @@ package dao;
 
 import Exceptions.DataAccessLayerException;
 import abstractDao.AbstractDao;
+import abstractDao.HibernateFactory;
 import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Criteria;
+import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
@@ -136,5 +138,14 @@ public class ServiceProviderDAO extends AbstractDao<ServiceProvider> {
        list=q.list();
        return list;
    }
+   public List<ServiceProvider> getServiceProviderAndAddress() {
+Criteria criteria=session.createCriteria(ServiceProvider.class,"serviceProvider").createAlias("serviceProvider.address", "address");
+//ServiceProvider sp=providerDAO.find(6);
+ArrayList<ServiceProvider> list=new ArrayList<>(criteria.list());
+list.stream().forEach((sp1) -> {
+            Hibernate.initialize(sp1.getServiceProviderServiceses()) ;
+        });
+        return list;
+    }
 
 }
