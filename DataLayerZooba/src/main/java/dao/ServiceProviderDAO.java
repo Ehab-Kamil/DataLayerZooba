@@ -153,5 +153,10 @@ list.stream().forEach((sp1) -> {
               .add(Restrictions.isNull("sp.serviceProvider"));
         return criteria.list();
     }
-
+public List<ServiceProvider> getServiceProviderBranches(int id)
+{
+ Criteria criteria=session.createCriteria(ServiceProvider.class,"sp")
+              .add(Restrictions.eq("sp.serviceProvider.id",id));
+ return criteria.list();
+}
 }

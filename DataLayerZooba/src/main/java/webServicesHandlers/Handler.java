@@ -394,6 +394,23 @@ public class Handler {
         ServiceProviderDAO serviceProviderDAO=new ServiceProviderDAO(session);
         List<ServiceProvider> serviceProviders=new ArrayList<>(serviceProviderDAO.getMainServiceProviders());
         serviceProviders.stream().forEach((sp) -> {
+            Hibernate.initialize(sp.getMakes());
+           Hibernate.initialize(sp.getAddress());
+            Hibernate.initialize(sp.getServiceProviderCalendars());
+             Hibernate.initialize(sp.getServiceProviderPhones());
+             Hibernate.initialize(sp.getServiceProviderServiceses());
+            //System.out.println(""+sp.getName());
+        });
+        HibernateFactory.close(session);
+        return serviceProviders;
+    }
+
+    public List<ServiceProvider> getServiceProviderBranches(int serviceProviderId) {
+      session=HibernateFactory.openSession();
+        ServiceProviderDAO serviceProviderDAO=new ServiceProviderDAO(session);
+        List<ServiceProvider> serviceProviders=new ArrayList<>(serviceProviderDAO.getServiceProviderBranches(serviceProviderId));
+        serviceProviders.stream().forEach((sp) -> {
+            Hibernate.initialize(sp.getMakes());
            Hibernate.initialize(sp.getAddress());
             Hibernate.initialize(sp.getServiceProviderCalendars());
              Hibernate.initialize(sp.getServiceProviderPhones());
