@@ -58,7 +58,7 @@ public class ServiceProviderCalendar  implements java.io.Serializable {
         this.id = id;
     }
 
-@ManyToOne(fetch=FetchType.LAZY)
+@ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="days_id", nullable=false)
     public Days getDays() {
         return this.days;

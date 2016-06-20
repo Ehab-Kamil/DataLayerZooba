@@ -31,5 +31,13 @@ public class DeviceDao extends AbstractDao<Device>{
 
         return lst;
     }
-   
+    
+    public List<Device> getdevicebyToken(String token)
+    {
+      Criteria crt = session.createCriteria(Device.class, "device")
+                .add(Restrictions.eq("token",  token));
+        List<Device> lst = crt.list();
+
+        return lst;
+    }
 }
