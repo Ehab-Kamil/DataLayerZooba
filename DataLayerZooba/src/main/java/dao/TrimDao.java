@@ -23,7 +23,7 @@ public class TrimDao extends AbstractDao<Trim> {
     Session session;
 
     public TrimDao(Session s) {
-        super(Trim.class,s);
+        super(Trim.class, s);
         session = s;
     }
 
@@ -48,11 +48,11 @@ public class TrimDao extends AbstractDao<Trim> {
 
     @Override
     public void create(Trim t) {
-        super.create(t); //To change body of generated methods, choose Tools | Templates.
+        Trim trim = getUniqueTrimByName(t.getName());
+        if (trim == null) {
+            super.create(t); //To change body of generated methods, choose Tools | Templates.
+        }
     }
-    
-    
-    
 
     public List<Trim> getTrimByName(String name) {
         Criteria crt = session.createCriteria(Trim.class).add(Restrictions.like("name", "%" + name + "%"));
@@ -93,5 +93,17 @@ public class TrimDao extends AbstractDao<Trim> {
         List<Trim> lst = crt.list();
 
         return lst;
+    }
+
+    public Trim getUniqueTrimByName(String name) {
+        Criteria crt = session.createCriteria(Trim.class).add(Restrictions.like("name", name));
+        List<Trim> listTrims = crt.list();
+        Trim result = null;
+
+        if (listTrims.size() > 0) {
+            result = listTrims.get(0);
+        }
+        return result;
+
     }
 }

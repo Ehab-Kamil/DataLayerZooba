@@ -27,7 +27,7 @@ import pojo.*;
  * @author Ehab
  */
 public class DataLayer {
-    
+
     CarFeaturesDao carFeaturesDao;
     CoordinatesDAO coordinatesDAO;
     MakeDao makeDao;
@@ -49,11 +49,9 @@ public class DataLayer {
     YearDao yearDao;
     Session session;
     Transaction transaction;
-    
+
     public int insertVehicle(Make make, Model model, Year year, Trim trim) {
-        
         int result = 0;
-        
         session = HibernateFactory.openSession();
         transaction = session.beginTransaction();
         try {
@@ -62,17 +60,38 @@ public class DataLayer {
             yearDao = new YearDao(session);
             trimDao = new TrimDao(session);
             vehicleModelDao = new VehicleModelDao(session);
+
+            Make finalMake = makeDao.getUniqueMakeByName(make.getName());
+            Model finalModel = modelDao.getUniqueModelByName(model.getName());
+            Year finalYear = yearDao.getYearByName(year.getName());
+            Trim finalTrim = trimDao.getUniqueTrimByName(trim.getName());
+
             VehicleModel vehicleModel = new VehicleModel();
-            vehicleModel.setModel(model);
-            vehicleModel.setTrim(trim);
-            vehicleModel.setYear(year);
-            
-            make.getModels().add(model);
-            model.setMake(make);
-            model.getVehicleModels().add(vehicleModel);
-            year.getVehicleModels().add(vehicleModel);
-            trim.getVehicleModels().add(vehicleModel);
-            
+            if (finalModel == null) {
+                vehicleModel.setModel(model);
+            } else {
+                vehicleModel.setModel(finalModel);
+            }
+            if (finalTrim == null) {
+                vehicleModel.setTrim(trim);
+            } else {
+                vehicleModel.setTrim(finalTrim);
+            }
+            if (finalYear == null) {
+                vehicleModel.setYear(year);
+            } else {
+                vehicleModel.setYear(finalYear);
+            }
+
+//            make.getModels().add(model);
+            if (finalMake == null) {
+                model.setMake(make);
+            } else {
+                model.setMake(finalMake);
+            }
+//            model.getVehicleModels().add(vehicleModel);
+//            year.getVehicleModels().add(vehicleModel);
+//            trim.getVehicleModels().add(vehicleModel);
             makeDao.create(make);
             modelDao.create(model);
             yearDao.create(year);
@@ -91,73 +110,73 @@ public class DataLayer {
 
     ////This Function is Not Tested Yet 
     public int sendForgetPasswordMail(String email) {
-        
+
         int result = 0;
-        
+
         session = HibernateFactory.openSession();
         transaction = session.beginTransaction();
         userDao = new UserDao(session);
         User u = new User();
         u.setEmail(email);
         User user = (User) userDao.findByExample(u);
-        
+
         MailSender mailSender = new MailSender();
         mailSender.sendRestPasswordMail(user.getEmail(), user.getPassword());
-        
+
         result = 1;
-        
+
         return result;
     }
-    
+
     public ServiceProvider getServiceProviderByName(String serviceProviderName) {
-        
+
         session = HibernateFactory.openSession();
         ServiceProviderDAO serviceProviderDAO = new ServiceProviderDAO(session);
-        
+
         ServiceProvider serviceProvider = new ServiceProvider();
         serviceProvider.setName(serviceProviderName);
         List<ServiceProvider> lstServProv = (List<ServiceProvider>) serviceProviderDAO.findByExample(serviceProvider);
         HibernateFactory.close(session);
         return lstServProv.get(0);
-        
+
     }
-    
+
     public void insertServiceProvider(ServiceProvider newServiceProvider) {
-        
+
         session = HibernateFactory.openSession();
         transaction = session.beginTransaction();
         ServiceProviderDAO serviceProviderDAO = new ServiceProviderDAO(session);
         serviceProviderDAO.create(newServiceProvider);
         transaction.commit();
         HibernateFactory.close(session);
-        
+
     }
-    
+
     public void insertAddressForServiceProvider(Address address) {
         Session session = HibernateFactory.openSession();
         Transaction transaction = session.beginTransaction();
-        
+
         AddressDao addressDao = new AddressDao(session);
-        
+
         addressDao.create(address);
-        
+
         transaction.commit();
         HibernateFactory.close(session);
     }
-    
+
     public void insertPhoneForServiiceProvider(ServiceProviderPhone phone) {
         Session session = HibernateFactory.openSession();
         Transaction transaction = session.beginTransaction();
-        
+
         ServiceProviderPhoneDao serviceProviderPhoneDao = new ServiceProviderPhoneDao(session);
-        
+
         serviceProviderPhoneDao.create(phone);
-        
+
         transaction.commit();
         HibernateFactory.close(session);
-        
+
     }
-    
+
     public void updateServiceProvider(ServiceProvider serviceProvider) {
         session = HibernateFactory.openSession();
         transaction = session.beginTransaction();
@@ -165,30 +184,30 @@ public class DataLayer {
         serviceProviderDAO.saveOrUpdate(serviceProvider);
         transaction.commit();
         HibernateFactory.close(session);
-        
+
     }
-    
+
     public List<String> getAllMakesAsStrings() {
         List<String> results = new ArrayList<>();
         session = HibernateFactory.openSession();
         MakeDao makeDao = new MakeDao(session);
         List<Make> lsMakes = makeDao.findAll();
-        
+
         lsMakes.stream().forEach((make) -> {
             results.add(make.getName());
         });
         HibernateFactory.close(session);
         return results;
     }
-    
+
     public boolean getMakesFromStringArray(String[] selectedMakes, ServiceProvider serviceProvider) {
-        
+
         session = HibernateFactory.openSession();
         transaction = session.beginTransaction();
         MakeDao makeDao = new MakeDao(session);
         ServiceProviderDAO serviceProviderDAO = new ServiceProviderDAO(session);
         List<Make> result = new ArrayList<>();
-        
+
         for (String makeName : selectedMakes) {
             Make iteratedMake = makeDao.getUniqueMakeByName(makeName);
             iteratedMake.getServiceProviders().add(serviceProvider);
@@ -200,90 +219,90 @@ public class DataLayer {
         serviceProviderDAO.saveOrUpdate(serviceProvider);
         transaction.commit();
         HibernateFactory.close(session);
-        
+
         return true;
     }
-    
+
     public List<String> getAllDaysAsString() {
         List<String> results = new ArrayList<>();
         session = HibernateFactory.openSession();
         DaysDAO daysDAO = new DaysDAO(session);
         List<Days> lsDays = daysDAO.findAll();
-        
+
         lsDays.stream().forEach((day) -> {
             results.add(day.getName());
         });
-        
+
         HibernateFactory.close(session);
         return results;
     }
-    
+
     public void insertSchedule(String[] selectedDays, ServiceProvider serviceProvider, Date from, Date to) {
-        
+
         Days day = null;
         session = HibernateFactory.openSession();
         transaction = session.beginTransaction();
-        
+
         DaysDAO daysDAO = new DaysDAO(session);
         ServiceProviderCalendarDAO serviceProviderCalendarDAO = new ServiceProviderCalendarDAO(session);
-        
+
         for (int i = 0; i < selectedDays.length; i++) {
             day = daysDAO.getDayByName(selectedDays[i]);
             serviceProviderCalendarDAO.create(new ServiceProviderCalendar(day, serviceProvider, from, to));
         }
-        
+
         transaction.commit();
         HibernateFactory.close(session);
     }
-    
+
     public List<String> getAllServicesAsString() {
-        
+
         session = HibernateFactory.openSession();
-        
+
         List<String> results = new ArrayList<>();
         ServiceDAO serviceDAO = new ServiceDAO(session);
-        
+
         List<Service> lsServices = serviceDAO.findAll();
-        
+
         lsServices.stream().forEach((service) -> {
             results.add(service.getName());
         });
-        
+
         HibernateFactory.close(session);
         return results;
     }
-    
+
     public void setServicesForServiceProvider(String[] selectedServices, ServiceProvider serviceProvider, Date serviceFrom, Date serviceTo) {
-        
+
         session = HibernateFactory.openSession();
         transaction = session.beginTransaction();
         ServiceDAO serviceDAO = new ServiceDAO(session);
         ServiceProviderDAO serviceProviderDAO = new ServiceProviderDAO(session);
         ServiceProviderServicesDao serviceProviderServicesDao = new ServiceProviderServicesDao(session);
-        
+
         for (String serviceName : selectedServices) {
             Service iteratedService = serviceDAO.getUniqueServiceByName(serviceName);
             ServiceProviderServices serviceProviderServices = new ServiceProviderServices(iteratedService, serviceProvider, serviceFrom, serviceTo);
             serviceProviderServicesDao.create(serviceProviderServices);
         }
-        
+
         transaction.commit();
         HibernateFactory.close(session);
     }
-    
+
     public List<User> getAllUsers() {
         session = HibernateFactory.openSession();
-        
+
         userDao = new UserDao(session);
         List<User> users = userDao.findAll();
         HibernateFactory.close(session);
         return users;
-        
+
     }
-    
+
     public int suspendUser(User u) {
         session = HibernateFactory.openSession();
-        
+
         userDao = new UserDao(session);
         u.setSuspended(1);
         try {
@@ -297,10 +316,10 @@ public class DataLayer {
             HibernateFactory.close(session);
         }
     }
-    
+
     public int unsuspendUser(User u) {
         session = HibernateFactory.openSession();
-        
+
         userDao = new UserDao(session);
         u.setSuspended(0);
         try {
@@ -314,16 +333,16 @@ public class DataLayer {
             HibernateFactory.close(session);
         }
     }
-    
+
     public void insertService(String name, List<TypeAndUnit> typeAndUnits) {
-        
+
         session = HibernateFactory.openSession();
         transaction = session.beginTransaction();
         ServiceDAO serviceDAO = new ServiceDAO(session);
-        
+
         Service service = new Service(name);
         serviceDAO.create(service);
-        
+
         service = serviceDAO.getUniqueServiceByName(name);
         typeDao = new TypeDao(session);
         measuringUnitDao = new MeasuringUnitDao(session);
@@ -333,15 +352,15 @@ public class DataLayer {
             type.setService(service);
             type.setMeasuringUnit(measuringUnitDao.getByName(tau.getUnitName()));
             this.typeDao.create(type);
-            
+
         }
         transaction.commit();
         HibernateFactory.close(session);
     }
-    
+
     public List<String> getAllUnits() {
         List<String> result = new ArrayList<>();
-        
+
         session = HibernateFactory.openSession();
         MeasuringUnitDao measuringUnitDao = new MeasuringUnitDao(session);
         List<MeasuringUnit> lsMeasuringUnits = measuringUnitDao.findAll();
@@ -351,12 +370,12 @@ public class DataLayer {
         HibernateFactory.close(session);
         return result;
     }
-    
+
     public void insertTypeForService(List<TypeAndUnit> selectedType, int serviceId) {
         session = HibernateFactory.openSession();
-        
+
     }
-    
+
     public ServiceProvider getServiceProviderById(int serviceProviderId) {
         session = HibernateFactory.openSession();
         ServiceProviderDAO serviceProviderDAO = new ServiceProviderDAO(session);
