@@ -53,7 +53,7 @@ public class YearDao extends AbstractDao<Year> {
                 createAlias("year.vehicleModels", "vModel")
                 .createAlias("vModel.model", "model")
                 .add(Restrictions.like("model.name", "%" + model + "%"));
-             crt.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        crt.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         List<Year> lst = crt.list();
 
         return lst;

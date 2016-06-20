@@ -86,8 +86,7 @@ public class MakeDao extends AbstractDao<Make> {
                 createAlias("make.serviceProviders", "serviceprovider")
                 .add(Restrictions.like("serviceprovider.name", "%" + serviceProvider + "%"));
         List<Make> lst = crt.list();
-        for(Make m:lst)
-        {
+        for (Make m : lst) {
             Hibernate.initialize(m.getName());
         }
         return lst;
