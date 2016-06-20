@@ -34,8 +34,14 @@ public class TrackingDataDao extends AbstractDao<TrackingData> {
     }
 
     public TrackingData find(int id) throws DataAccessLayerException {
-        return super.find(TrackingData.class, id); //To change body of generated methods, choose Tools | Templates.
-    }
+       TrackingData obj = null;
+        try {
+            obj = (TrackingData) session.get(TrackingData.class, id);
+        } catch (HibernateException e) {
+            handleException(e);
+        }
+        return obj;  
+      }
 
     @Override
     public List<TrackingData> findByExample(TrackingData t) throws DataAccessLayerException {
@@ -76,11 +82,8 @@ public class TrackingDataDao extends AbstractDao<TrackingData> {
         return td;
     }
      
-       public List<TrackingData> getByVehicle(Vehicle vehicle){
-      
-       
-           List<TrackingData> list =  session.createQuery("SELECT td FROM TrackingData td ,Vehicle v WHERE td.vehicle.id = :id").setInteger("id", vehicle.getId()).list();
-     
+       public List<TrackingData> getByVehicle(int id){
+           List<TrackingData> list =  session.createQuery("SELECT td FROM TrackingData td  WHERE td.vehicle.id = :id").setInteger("id", id).list(); 
         return list;
     }
 

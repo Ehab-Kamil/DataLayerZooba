@@ -21,6 +21,7 @@ import dao.VehicleDao;
 import dao.VehicleModelDao;
 import dao.YearDao;
 import facadePkg.DataLayer;
+import java.math.BigInteger;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -130,7 +131,7 @@ public class Handler {
 
     }
 
-    public Vehicle addVehicle(String m, String y, String trim, int u_id, String carName, int intialOdemeter) {
+    public Vehicle addVehicle(String m, String y, String trim, int u_id, String carName, int intialOdemeter,String liString) {
 
         boolean result = false;
         session = HibernateFactory.openSession();
@@ -168,6 +169,7 @@ public class Handler {
         vehicle.setIntialOdemeter(intialOdemeter);
         vehicle.setName(carName);
         vehicle.setUser(user);
+        vehicle.setLicencePlate(liString);
         vehicle.setVehicleModel(vm);
         vm.getVehicles().add(vehicle);
         user.getVehicles().add(vehicle);
@@ -300,6 +302,8 @@ public class Handler {
 
         tripDAO.create(trip);
         Trips result = tripDAO.findByExample(trip).get(0);
+        Hibernate.initialize(result.getCoordinateses());
+      
         transaction.commit();
         HibernateFactory.close(session);
 
@@ -321,8 +325,10 @@ public class Handler {
         coordinates.setTrips(trips);
 
         coordinatesDAO.create(coordinates);
-
-        Coordinates result = coordinatesDAO.findByExample(coordinates).get(0);
+List<Coordinates> list=coordinatesDAO.findByExample(coordinates);
+   Coordinates result=new Coordinates();
+if(list.size()>0)
+ result =list.get(0);
 
         transaction.commit();
 
@@ -342,8 +348,7 @@ public class Handler {
 
     }
 
-    public boolean insertTrackingData(int intialOdemeter, String dataAdded, String dataModified, int typeId, int vehicleId, String value)
-    {
+    public boolean insertTrackingData(int intialOdemeter, String dataAdded, String dataModified, int typeId, int vehicleId, String value) {
         session = HibernateFactory.openSession();
         TrackingDataDao trackingDataDAO = new TrackingDataDao(session);
         TypeDao typeDao = new TypeDao(session);
@@ -355,7 +360,7 @@ public class Handler {
         trackingData.setType(type);
         Vehicle vehicle = vd.find(vehicleId);
         trackingData.setVehicle(vehicle);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         java.util.Date dateadded;
         java.util.Date datemodified;
         try {
@@ -372,13 +377,13 @@ public class Handler {
             HibernateFactory.close(session);
             return false;
         }
-        boolean flag=true;
-        try{
-            System.out.println(""+type.getId()+" "+vehicle.getId());
-        }catch(Exception e)
-        {
-        flag=false;
-        }        if (flag&&value!=null) {
+        boolean flag = true;
+        try {
+            System.out.println("" + type.getId() + " " + vehicle.getId());
+        } catch (Exception e) {
+            flag = false;
+        }
+        if (flag && value != null) {
             session.getTransaction().begin();
             trackingDataDAO.create(trackingData);
             session.getTransaction().commit();
@@ -388,17 +393,17 @@ public class Handler {
             return false;
         }
     }
-    public List<ServiceProvider> getServiceProviders()
-    {
-    session=HibernateFactory.openSession();
-        ServiceProviderDAO serviceProviderDAO=new ServiceProviderDAO(session);
-        List<ServiceProvider> serviceProviders=new ArrayList<>(serviceProviderDAO.getMainServiceProviders());
+
+    public List<ServiceProvider> getServiceProviders() {
+        session = HibernateFactory.openSession();
+        ServiceProviderDAO serviceProviderDAO = new ServiceProviderDAO(session);
+        List<ServiceProvider> serviceProviders = new ArrayList<>(serviceProviderDAO.getMainServiceProviders());
         serviceProviders.stream().forEach((sp) -> {
             Hibernate.initialize(sp.getMakes());
-           Hibernate.initialize(sp.getAddress());
+            Hibernate.initialize(sp.getAddress());
             Hibernate.initialize(sp.getServiceProviderCalendars());
-             Hibernate.initialize(sp.getServiceProviderPhones());
-             Hibernate.initialize(sp.getServiceProviderServiceses());
+            Hibernate.initialize(sp.getServiceProviderPhones());
+            Hibernate.initialize(sp.getServiceProviderServiceses());
             //System.out.println(""+sp.getName());
         });
         HibernateFactory.close(session);
@@ -406,18 +411,54 @@ public class Handler {
     }
 
     public List<ServiceProvider> getServiceProviderBranches(int serviceProviderId) {
-      session=HibernateFactory.openSession();
-        ServiceProviderDAO serviceProviderDAO=new ServiceProviderDAO(session);
-        List<ServiceProvider> serviceProviders=new ArrayList<>(serviceProviderDAO.getServiceProviderBranches(serviceProviderId));
+        session = HibernateFactory.openSession();
+        ServiceProviderDAO serviceProviderDAO = new ServiceProviderDAO(session);
+        List<ServiceProvider> serviceProviders = new ArrayList<>(serviceProviderDAO.getServiceProviderBranches(serviceProviderId));
         serviceProviders.stream().forEach((sp) -> {
             Hibernate.initialize(sp.getMakes());
-           Hibernate.initialize(sp.getAddress());
+            Hibernate.initialize(sp.getAddress());
             Hibernate.initialize(sp.getServiceProviderCalendars());
-             Hibernate.initialize(sp.getServiceProviderPhones());
-             Hibernate.initialize(sp.getServiceProviderServiceses());
+            Hibernate.initialize(sp.getServiceProviderPhones());
+            Hibernate.initialize(sp.getServiceProviderServiceses());
             //System.out.println(""+sp.getName());
         });
         HibernateFactory.close(session);
         return serviceProviders;
+    }
+
+    public TrackingData getTrackingData() {
+        session = HibernateFactory.openSession();
+        BigInteger bi = (BigInteger) session.createSQLQuery("SELECT LAST_INSERT_ID()").uniqueResult();
+        TrackingDataDao trackingDataDao = new TrackingDataDao(session);
+        int id = bi.intValue();
+        TrackingData td = trackingDataDao.find(id);
+        Hibernate.initialize(td.getType());
+        Hibernate.initialize(td.getType().getService());
+         Hibernate.initialize(td.getType().getMeasuringUnit());
+        HibernateFactory.close(session);
+        return td;
+    }
+
+    public List<TrackingData> getTrackingData(int vehicleId) {
+       session = HibernateFactory.openSession();
+       TrackingDataDao tdd=new TrackingDataDao(session);
+       List<TrackingData> list=tdd.getByVehicle(vehicleId);
+       list.stream().forEach((td)->{
+       Hibernate.initialize(td.getType());
+        Hibernate.initialize(td.getType().getService());
+         Hibernate.initialize(td.getType().getMeasuringUnit());
+       });
+       
+       HibernateFactory.close(session);
+       return list;
+    }
+
+    public boolean lPlateisExists(String licencePlate) {
+       session = HibernateFactory.openSession();
+       VehicleDao vd=new VehicleDao(session);
+      Vehicle v=new Vehicle();
+      v.setLicencePlate(licencePlate);
+     List<Vehicle> list=vd.findByExample(v);
+     return list.size()>0;
     }
 }
