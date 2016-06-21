@@ -28,7 +28,7 @@ public class CarFeaturesDao extends AbstractDao<CarFeatures> {
 
     public CarFeatures getCarFeaturesByName(String name) {
        
-        Criteria crt = session.createCriteria(CarFeatures.class).add(Restrictions.like("name", "%" + name + "%"));
+        Criteria crt = session.createCriteria(CarFeatures.class).add(Restrictions.eq("name", name ));
         CarFeatures result = (CarFeatures) crt.uniqueResult();
 
         return result;

@@ -49,6 +49,7 @@ public class DataLayer {
     YearDao yearDao;
     Session session;
     Transaction transaction;
+    VehicleModel v1 = new VehicleModel();
 
     public int insertVehicle(Make make, Model model, Year year, Trim trim) {
         int result = 0;
@@ -387,5 +388,151 @@ public class DataLayer {
         Hibernate.initialize(result.getServiceProviderServiceses());
         HibernateFactory.close(session);
         return result;
+    }
+    
+     public List<VehicleModel> getVehicles() {
+        session = HibernateFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        vehicleModelDao = new VehicleModelDao(session);
+        List<VehicleModel> vehicles = vehicleModelDao.findAll();
+        HibernateFactory.close(session);
+        return vehicles;
+    }
+
+    public boolean deleteVehicle(int id) {
+        boolean flag = true;
+        int vmId;
+        List<Integer> vmIds = new ArrayList();
+        session = HibernateFactory.openSession();
+        vehicleModelDao = new VehicleModelDao(session);
+        vehicleDao = new VehicleDao(session);
+        try {
+            v1 = vehicleModelDao.find(id);
+            List<Vehicle> vehicleList = vehicleDao.findAll();
+            for (Vehicle vehicle : vehicleList) {
+                VehicleModel vm = vehicle.getVehicleModel();
+                vmId = vm.getId();
+                vmIds.add(vmId);
+            }
+            for (int n : vmIds) {
+                if (id == n) {
+                    flag = false;
+                    System.out.println("Can't delete");
+                    break;
+                }
+            }
+            if (flag) {
+                Transaction transaction = session.beginTransaction();
+                vehicleModelDao.delete(v1);
+                transaction.commit();
+            }
+        } catch (HibernateException ex) {
+            transaction.rollback();
+        } finally {
+            HibernateFactory.close(session);
+        }
+        return flag;
+    }
+
+    public ArrayList showFeatures(int modelId) {
+        VehicleModel vm = new VehicleModel();
+        session = HibernateFactory.openSession();
+        modelFeatureValueDao = new ModelFeatureValueDao(session);
+        vehicleModelDao = new VehicleModelDao(session);
+        vm = vehicleModelDao.find(modelId);
+        ArrayList<ModelFeaturesValues> featuresList = (ArrayList<ModelFeaturesValues>) modelFeatureValueDao.getMFValuesByByVehicleModel(vm);
+        HibernateFactory.close(session);
+        return featuresList;
+    }
+
+    public List<Make> showMakes(int d) {
+        session = HibernateFactory.openSession();
+        serviceProviderDAO = new ServiceProviderDAO(session);
+        makeDao = new MakeDao(session);
+        ServiceProvider p;
+        p = serviceProviderDAO.find(d);
+        List<Make> makeList = makeDao.getMakebyServiceProvider(p.getName());
+        HibernateFactory.close(session);
+        return makeList;
+    }
+
+    public void updateModelFeatureValues(ModelFeaturesValues m) {
+        session = HibernateFactory.openSession();
+        modelFeatureValueDao = new ModelFeatureValueDao(session);
+         carFeaturesDao=new CarFeaturesDao(session);
+         transaction = session.beginTransaction();
+        carFeaturesDao.saveOrUpdate(m.getCarFeatures());
+        modelFeatureValueDao.saveOrUpdate(m);
+        transaction.commit();
+        HibernateFactory.close(session);
+    }
+
+    public List<Object[]> findServiceProviders() {
+        session = HibernateFactory.openSession();
+        serviceProviderDAO = new ServiceProviderDAO(session);
+        List<Object[]> list;
+        list = serviceProviderDAO.getServiceProviderInfo();
+        HibernateFactory.close(session);
+        return list;
+
+    }
+
+    public List<ServiceProviderServices> getServices(ServiceProvider serviceProvider) {
+        session = HibernateFactory.openSession();
+        serviceProviderServicesDao = new ServiceProviderServicesDao(session);
+        List<ServiceProviderServices> list = serviceProviderServicesDao.getByServiceProvider(serviceProvider);
+        HibernateFactory.close(session);
+        return list;
+    }
+
+    public ServiceProvider findById(int d) {
+        session = HibernateFactory.openSession();
+        serviceProviderDAO = new ServiceProviderDAO(session);
+        ServiceProvider s = serviceProviderDAO.find(d);
+        HibernateFactory.close(session);
+        return s;
+    }
+
+    public List<Service> getServices() {
+        session = HibernateFactory.openSession();
+        serviceDAO = new ServiceDAO(session);
+        List<Service> list = serviceDAO.findAll();
+        HibernateFactory.close(session);
+        return list;
+    }
+
+    public List<VehicleModel> getVehicleModel(int d) {
+        session = HibernateFactory.openSession();
+        vehicleModelDao = new VehicleModelDao(session);
+        List<VehicleModel> v = vehicleModelDao.getByVehicleModelId(d);
+        HibernateFactory.close(session);
+        return v;
+    }
+
+    public void updateVehicleModel(VehicleModel v) {
+        session = HibernateFactory.openSession();
+        vehicleModelDao = new VehicleModelDao(session);
+        YearDao yearDao = new YearDao(session);
+        TrimDao trimDao = new TrimDao(session);
+        ModelDao modelDao = new ModelDao(session);
+        MakeDao makeDao = new MakeDao(session);
+
+         transaction = session.beginTransaction();
+        yearDao.saveOrUpdate(v.getYear());
+        trimDao.saveOrUpdate(v.getTrim());
+        modelDao.saveOrUpdate(v.getModel());
+        makeDao.saveOrUpdate(v.getModel().getMake());
+        vehicleModelDao.saveOrUpdate(v);
+        transaction.commit();
+        HibernateFactory.close(session);
+    }
+
+    public VehicleModel find(int d) {
+        session = HibernateFactory.openSession();
+        vehicleModelDao = new VehicleModelDao(session);
+        VehicleModel m = vehicleModelDao.find(d);
+
+        HibernateFactory.close(session);
+        return m;
     }
 }
