@@ -535,4 +535,14 @@ public class DataLayer {
         HibernateFactory.close(session);
         return m;
     }
+    public List<Device> getAllDevices()
+    {
+    session=HibernateFactory.openSession();
+    DeviceDao deviceDao=new DeviceDao(session);
+    List<Device> list =deviceDao.getAllDevices();
+    list.stream().forEach((d)->{
+    Hibernate.initialize(d.getUser());
+    });
+    return list;
+    }
 }

@@ -40,4 +40,8 @@ public class DeviceDao extends AbstractDao<Device>{
 
         return lst;
     }
+    public List<Device> getAllDevices()
+    {
+    return super.findAll(Device.class);
+    }
 }
