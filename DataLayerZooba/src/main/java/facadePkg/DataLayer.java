@@ -211,12 +211,12 @@ public class DataLayer {
 
         for (String makeName : selectedMakes) {
             Make iteratedMake = makeDao.getUniqueMakeByName(makeName);
-            iteratedMake.getServiceProviders().add(serviceProvider);
-            makeDao.saveOrUpdate(iteratedMake);
+            //  iteratedMake.getServiceProviders().add(serviceProvider);
+            //  makeDao.saveOrUpdate(iteratedMake);
             result.add(iteratedMake);
         }
         Set<Make> makeSet = new HashSet<>(result);
-//        serviceProvider.setMakes(makeSet);
+        serviceProvider.setMakes(makeSet);
         serviceProviderDAO.saveOrUpdate(serviceProvider);
         transaction.commit();
         HibernateFactory.close(session);
@@ -389,8 +389,8 @@ public class DataLayer {
         HibernateFactory.close(session);
         return result;
     }
-    
-     public List<VehicleModel> getVehicles() {
+
+    public List<VehicleModel> getVehicles() {
         session = HibernateFactory.openSession();
         Transaction transaction = session.beginTransaction();
         vehicleModelDao = new VehicleModelDao(session);
@@ -459,8 +459,8 @@ public class DataLayer {
     public void updateModelFeatureValues(ModelFeaturesValues m) {
         session = HibernateFactory.openSession();
         modelFeatureValueDao = new ModelFeatureValueDao(session);
-         carFeaturesDao=new CarFeaturesDao(session);
-         transaction = session.beginTransaction();
+        carFeaturesDao = new CarFeaturesDao(session);
+        transaction = session.beginTransaction();
         carFeaturesDao.saveOrUpdate(m.getCarFeatures());
         modelFeatureValueDao.saveOrUpdate(m);
         transaction.commit();
@@ -517,7 +517,7 @@ public class DataLayer {
         ModelDao modelDao = new ModelDao(session);
         MakeDao makeDao = new MakeDao(session);
 
-         transaction = session.beginTransaction();
+        transaction = session.beginTransaction();
         yearDao.saveOrUpdate(v.getYear());
         trimDao.saveOrUpdate(v.getTrim());
         modelDao.saveOrUpdate(v.getModel());
@@ -535,14 +535,59 @@ public class DataLayer {
         HibernateFactory.close(session);
         return m;
     }
-    public List<Device> getAllDevices()
-    {
-    session=HibernateFactory.openSession();
-    DeviceDao deviceDao=new DeviceDao(session);
-    List<Device> list =deviceDao.getAllDevices();
-    list.stream().forEach((d)->{
-    Hibernate.initialize(d.getUser());
-    });
-    return list;
+
+    public List<Device> getAllDevices() {
+        session = HibernateFactory.openSession();
+        DeviceDao deviceDao = new DeviceDao(session);
+        List<Device> list = deviceDao.getAllDevices();
+        list.stream().forEach((d) -> {
+            Hibernate.initialize(d.getUser());
+        });
+        return list;
+    }
+
+    public void insertMakeForServiceProvider(String makeName, ServiceProvider serviceProvider) {
+
+        session = HibernateFactory.openSession();
+        transaction = session.beginTransaction();
+        MakeDao makeDao = new MakeDao(session);
+        ServiceProviderDAO serviceProviderDAO = new ServiceProviderDAO(session);
+        Make make = makeDao.getUniqueMakeByName(makeName);
+        serviceProvider.getMakes().add(make);
+        serviceProviderDAO.saveOrUpdate(serviceProvider);
+        transaction.commit();
+        HibernateFactory.close(session);
+    }
+
+    public void deleteMakeForServiceProvider(String makeName, ServiceProvider serviceProvider) {
+        session = HibernateFactory.openSession();
+        transaction = session.beginTransaction();
+        MakeDao makeDao = new MakeDao(session);
+        ServiceProviderDAO serviceProviderDAO = new ServiceProviderDAO(session);
+        Make make = makeDao.getUniqueMakeByName(makeName);
+        serviceProvider.getMakes().remove(make);
+        serviceProviderDAO.saveOrUpdate(serviceProvider);
+        transaction.commit();
+        HibernateFactory.close(session);
+    }
+
+    public void insertServiceForServiceProvider(String serviceName, ServiceProvider serviceProvider, Date serviceFrom, Date serviceTo) {
+        session = HibernateFactory.openSession();
+        transaction = session.beginTransaction();
+        ServiceDAO serviceDAO = new ServiceDAO(session);
+//        ServiceProviderDAO serviceProviderDAO = new ServiceProviderDAO(session);
+        ServiceProviderServicesDao serviceProviderServicesDao = new ServiceProviderServicesDao(session);
+
+        Service service = serviceDAO.getUniqueServiceByName(serviceName);
+        ServiceProviderServices serviceProviderServices = new ServiceProviderServices(service, serviceProvider, serviceFrom, serviceTo);
+        serviceProviderServicesDao.create(serviceProviderServices);
+
+        transaction.commit();
+        HibernateFactory.close(session);
+
+    }
+
+    public void deleteServiceForServiceProvider(String serviceName, ServiceProvider serviceProvider, Date serviceFrom, Date serviceTo) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
