@@ -435,15 +435,19 @@ public class DataLayer implements Serializable{
         return flag;
     }
 
-    public ArrayList showFeatures(int modelId) {
+    public List showFeatures(int modelId) {
         VehicleModel vm = new VehicleModel();
         session = HibernateFactory.openSession();
         modelFeatureValueDao = new ModelFeatureValueDao(session);
         vehicleModelDao = new VehicleModelDao(session);
-        vm = vehicleModelDao.find(modelId);
-        ArrayList<ModelFeaturesValues> featuresList = (ArrayList<ModelFeaturesValues>) modelFeatureValueDao.getMFValuesByByVehicleModel(vm);
+        vm = vehicleModelDao.getByVehicleModelId(modelId).get(0);
+        List<ModelFeaturesValues> lst = new ArrayList<>(vm.getModelFeaturesValueses());
+         for (ModelFeaturesValues m : lst) {
+            Hibernate.initialize(m.getCarFeatures().getName());
+            Hibernate.initialize(m.getValue());
+        }
         HibernateFactory.close(session);
-        return featuresList;
+        return lst;
     }
 
     public List<Make> showMakes(int d) {
