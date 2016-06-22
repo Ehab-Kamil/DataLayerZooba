@@ -26,7 +26,7 @@ import pojo.*;
  *
  * @author Ehab
  */
-public class DataLayer implements Serializable{
+public class DataLayer implements Serializable {
 
     CarFeaturesDao carFeaturesDao;
     CoordinatesDAO coordinatesDAO;
@@ -68,7 +68,7 @@ public class DataLayer implements Serializable{
             Year finalYear = yearDao.getYearByName(year.getName());
             Trim finalTrim = trimDao.getUniqueTrimByName(trim.getName());
 
-             vehicleModel = new VehicleModel();
+            vehicleModel = new VehicleModel();
             if (finalModel == null) {
                 vehicleModel.setModel(model);
             } else {
@@ -100,7 +100,7 @@ public class DataLayer implements Serializable{
             trimDao.create(trim);
             vehicleModelDao.create(vehicleModel);
             transaction.commit();
-            vehicleModel=vehicleModelDao.getLastInserted();
+            vehicleModel = vehicleModelDao.getLastInserted();
         } catch (DataAccessLayerException ex) {
 //            HibernateFactory.rollback(transaction);
             result = 0;
@@ -143,11 +143,15 @@ public class DataLayer implements Serializable{
 
     }
 
-    public void insertServiceProvider(ServiceProvider newServiceProvider) {
+    public void insertServiceProvider(ServiceProvider newServiceProvider, ServiceProvider mainBranch) {
 
         session = HibernateFactory.openSession();
         transaction = session.beginTransaction();
         ServiceProviderDAO serviceProviderDAO = new ServiceProviderDAO(session);
+        if (mainBranch.getName().length()>0) {
+            ServiceProvider main = (ServiceProvider) serviceProviderDAO.findByExample(mainBranch).get(0);
+            newServiceProvider.setServiceProvider(main);
+        }
         serviceProviderDAO.create(newServiceProvider);
         transaction.commit();
         HibernateFactory.close(session);
@@ -281,7 +285,7 @@ public class DataLayer implements Serializable{
         ServiceDAO serviceDAO = new ServiceDAO(session);
         ServiceProviderDAO serviceProviderDAO = new ServiceProviderDAO(session);
         ServiceProviderServicesDao serviceProviderServicesDao = new ServiceProviderServicesDao(session);
-
+//serviceProviderServicesDao.
         for (String serviceName : selectedServices) {
             Service iteratedService = serviceDAO.getUniqueServiceByName(serviceName);
             ServiceProviderServices serviceProviderServices = new ServiceProviderServices(iteratedService, serviceProvider, serviceFrom, serviceTo);
@@ -442,7 +446,7 @@ public class DataLayer implements Serializable{
         vehicleModelDao = new VehicleModelDao(session);
         vm = vehicleModelDao.getByVehicleModelId(modelId).get(0);
         List<ModelFeaturesValues> lst = new ArrayList<>(vm.getModelFeaturesValueses());
-         for (ModelFeaturesValues m : lst) {
+        for (ModelFeaturesValues m : lst) {
             Hibernate.initialize(m.getCarFeatures().getName());
             Hibernate.initialize(m.getValue());
         }
@@ -589,10 +593,38 @@ public class DataLayer implements Serializable{
 
         transaction.commit();
         HibernateFactory.close(session);
-
     }
 
     public void deleteServiceForServiceProvider(String serviceName, ServiceProvider serviceProvider, Date serviceFrom, Date serviceTo) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//        session = HibernateFactory.openSession();
+//        transaction = session.beginTransaction();
+//        ServiceDAO serviceDAO = new ServiceDAO(session);
+////        ServiceProviderDAO serviceProviderDAO = new ServiceProviderDAO(session);
+//        ServiceProviderServicesDao serviceProviderServicesDao = new ServiceProviderServicesDao(session);
+//
+//        Service service = serviceDAO.getUniqueServiceByName(serviceName);
+//        ServiceProviderServices serviceProviderServices = new ServiceProviderServices(service, serviceProvider, serviceFrom, serviceTo);
+//        for (ServiceProviderServices sps : serviceProvider.getServiceProviderServiceses()) {
+//            if (sps.getService().getId() == service.getId()) {
+//                serviceProviderServicesDao.delete(sps);
+//            }
+//        }
+//        serviceProviderServicesDao.delete(serviceProviderServices);
+//
+//        transaction.commit();8
+//        HibernateFactory.close(session);
+        ///This Method might be done after a while  
+    }
+
+    public List<String> getAllServiceProviders() {
+        session = HibernateFactory.openSession();
+        serviceProviderDAO = new ServiceProviderDAO(session);
+        List<String> result = new ArrayList<>();
+        List<ServiceProvider> list = serviceProviderDAO.findAll();
+        HibernateFactory.close(session);
+        for (ServiceProvider sp : list) {
+            result.add(sp.getName());
+        }
+        return result;
     }
 }
