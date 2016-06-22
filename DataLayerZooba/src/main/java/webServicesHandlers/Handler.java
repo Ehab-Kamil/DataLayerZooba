@@ -461,4 +461,21 @@ if(list.size()>0)
      List<Vehicle> list=vd.findByExample(v);
      return list.size()>0;
     }
+
+    public boolean updateUserPassword(String email, String password) {
+   session=HibernateFactory.openSession();
+   UserDao userDao=new UserDao(session);
+   User u=new User();
+   u.setEmail(email);
+   List<User> list=userDao.findByExample(u);
+           if(list.size()>0)
+           {  u=list.get(0);
+           u.setPassword(password);
+           session.getTransaction().begin();
+           userDao.saveOrUpdate(u);
+            session.getTransaction().commit();
+           return true;
+           }
+           return false;
+    }
 }
