@@ -74,7 +74,7 @@ public class Service  implements java.io.Serializable {
         this.serviceProviderServiceses = serviceProviderServiceses;
     }
 
-@OneToMany(fetch=FetchType.LAZY, mappedBy="service")
+@OneToMany(fetch=FetchType.EAGER, mappedBy="service")
     public Set<Type> getTypes() {
         return this.types;
     }
