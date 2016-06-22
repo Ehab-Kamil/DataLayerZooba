@@ -9,8 +9,8 @@ import Exceptions.DataAccessLayerException;
 import Utils.MailSender;
 import DTO.TypeAndUnit;
 import abstractDao.HibernateFactory;
-import com.sun.tools.internal.xjc.api.TypeAndAnnotation;
 import dao.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -26,7 +26,7 @@ import pojo.*;
  *
  * @author Ehab
  */
-public class DataLayer {
+public class DataLayer implements Serializable{
 
     CarFeaturesDao carFeaturesDao;
     CoordinatesDAO coordinatesDAO;
@@ -51,8 +51,9 @@ public class DataLayer {
     Transaction transaction;
     VehicleModel v1 = new VehicleModel();
 
-    public int insertVehicle(Make make, Model model, Year year, Trim trim) {
+    public VehicleModel insertVehicle(Make make, Model model, Year year, Trim trim) {
         int result = 0;
+        VehicleModel vehicleModel = null;
         session = HibernateFactory.openSession();
         transaction = session.beginTransaction();
         try {
@@ -67,7 +68,7 @@ public class DataLayer {
             Year finalYear = yearDao.getYearByName(year.getName());
             Trim finalTrim = trimDao.getUniqueTrimByName(trim.getName());
 
-            VehicleModel vehicleModel = new VehicleModel();
+             vehicleModel = new VehicleModel();
             if (finalModel == null) {
                 vehicleModel.setModel(model);
             } else {
@@ -99,14 +100,14 @@ public class DataLayer {
             trimDao.create(trim);
             vehicleModelDao.create(vehicleModel);
             transaction.commit();
-            result = 1;
+            vehicleModel=vehicleModelDao.getLastInserted();
         } catch (DataAccessLayerException ex) {
 //            HibernateFactory.rollback(transaction);
             result = 0;
         } finally {
             HibernateFactory.close(session);
         }
-        return result;
+        return vehicleModel;
     }
 
     ////This Function is Not Tested Yet 
