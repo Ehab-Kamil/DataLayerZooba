@@ -9,8 +9,8 @@ import Exceptions.DataAccessLayerException;
 import Utils.MailSender;
 import DTO.TypeAndUnit;
 import abstractDao.HibernateFactory;
-import com.sun.tools.internal.xjc.api.TypeAndAnnotation;
 import dao.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -26,7 +26,7 @@ import pojo.*;
  *
  * @author Ehab
  */
-public class DataLayer {
+public class DataLayer implements Serializable{
 
     CarFeaturesDao carFeaturesDao;
     CoordinatesDAO coordinatesDAO;
@@ -51,8 +51,9 @@ public class DataLayer {
     Transaction transaction;
     VehicleModel v1 = new VehicleModel();
 
-    public int insertVehicle(Make make, Model model, Year year, Trim trim) {
+    public VehicleModel insertVehicle(Make make, Model model, Year year, Trim trim) {
         int result = 0;
+        VehicleModel vehicleModel = null;
         session = HibernateFactory.openSession();
         transaction = session.beginTransaction();
         try {
@@ -67,7 +68,7 @@ public class DataLayer {
             Year finalYear = yearDao.getYearByName(year.getName());
             Trim finalTrim = trimDao.getUniqueTrimByName(trim.getName());
 
-            VehicleModel vehicleModel = new VehicleModel();
+             vehicleModel = new VehicleModel();
             if (finalModel == null) {
                 vehicleModel.setModel(model);
             } else {
@@ -99,14 +100,14 @@ public class DataLayer {
             trimDao.create(trim);
             vehicleModelDao.create(vehicleModel);
             transaction.commit();
-            result = 1;
+            vehicleModel=vehicleModelDao.getLastInserted();
         } catch (DataAccessLayerException ex) {
 //            HibernateFactory.rollback(transaction);
             result = 0;
         } finally {
             HibernateFactory.close(session);
         }
-        return result;
+        return vehicleModel;
     }
 
     ////This Function is Not Tested Yet 
@@ -434,15 +435,19 @@ public class DataLayer {
         return flag;
     }
 
-    public ArrayList showFeatures(int modelId) {
+    public List showFeatures(int modelId) {
         VehicleModel vm = new VehicleModel();
         session = HibernateFactory.openSession();
         modelFeatureValueDao = new ModelFeatureValueDao(session);
         vehicleModelDao = new VehicleModelDao(session);
-        vm = vehicleModelDao.find(modelId);
-        ArrayList<ModelFeaturesValues> featuresList = (ArrayList<ModelFeaturesValues>) modelFeatureValueDao.getMFValuesByByVehicleModel(vm);
+        vm = vehicleModelDao.getByVehicleModelId(modelId).get(0);
+        List<ModelFeaturesValues> lst = new ArrayList<>(vm.getModelFeaturesValueses());
+         for (ModelFeaturesValues m : lst) {
+            Hibernate.initialize(m.getCarFeatures().getName());
+            Hibernate.initialize(m.getValue());
+        }
         HibernateFactory.close(session);
-        return featuresList;
+        return lst;
     }
 
     public List<Make> showMakes(int d) {
