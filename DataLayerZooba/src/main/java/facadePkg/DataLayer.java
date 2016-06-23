@@ -5,6 +5,8 @@
  */
 package facadePkg;
 
+import DTO.DayAndTime;
+import DTO.ServiceAndTime;
 import Exceptions.DataAccessLayerException;
 import Utils.MailSender;
 import DTO.TypeAndUnit;
@@ -148,7 +150,7 @@ public class DataLayer implements Serializable {
         session = HibernateFactory.openSession();
         transaction = session.beginTransaction();
         ServiceProviderDAO serviceProviderDAO = new ServiceProviderDAO(session);
-        if (mainBranch.getName().length()>0) {
+        if (mainBranch.getName().length() > 0) {
             ServiceProvider main = (ServiceProvider) serviceProviderDAO.findByExample(mainBranch).get(0);
             newServiceProvider.setServiceProvider(main);
         }
@@ -243,7 +245,7 @@ public class DataLayer implements Serializable {
         return results;
     }
 
-    public void insertSchedule(String[] selectedDays, ServiceProvider serviceProvider, Date from, Date to) {
+    public void insertSchedule(List<DayAndTime> daysAndTim, ServiceProvider serviceProvider) {
 
         Days day = null;
         session = HibernateFactory.openSession();
@@ -251,10 +253,10 @@ public class DataLayer implements Serializable {
 
         DaysDAO daysDAO = new DaysDAO(session);
         ServiceProviderCalendarDAO serviceProviderCalendarDAO = new ServiceProviderCalendarDAO(session);
+        for (DayAndTime theOne : daysAndTim) {
+            day = daysDAO.getDayByName(theOne.getDayName());
+            serviceProviderCalendarDAO.create(new ServiceProviderCalendar(day, serviceProvider, theOne.getFrom(), theOne.getTo()));
 
-        for (int i = 0; i < selectedDays.length; i++) {
-            day = daysDAO.getDayByName(selectedDays[i]);
-            serviceProviderCalendarDAO.create(new ServiceProviderCalendar(day, serviceProvider, from, to));
         }
 
         transaction.commit();
@@ -278,20 +280,17 @@ public class DataLayer implements Serializable {
         return results;
     }
 
-    public void setServicesForServiceProvider(String[] selectedServices, ServiceProvider serviceProvider, Date serviceFrom, Date serviceTo) {
-
+    public void setServicesForServiceProvider(List<ServiceAndTime> serviceAndTimes, ServiceProvider serviceProvider) {
         session = HibernateFactory.openSession();
         transaction = session.beginTransaction();
         ServiceDAO serviceDAO = new ServiceDAO(session);
         ServiceProviderDAO serviceProviderDAO = new ServiceProviderDAO(session);
         ServiceProviderServicesDao serviceProviderServicesDao = new ServiceProviderServicesDao(session);
-//serviceProviderServicesDao.
-        for (String serviceName : selectedServices) {
-            Service iteratedService = serviceDAO.getUniqueServiceByName(serviceName);
-            ServiceProviderServices serviceProviderServices = new ServiceProviderServices(iteratedService, serviceProvider, serviceFrom, serviceTo);
+        for (ServiceAndTime theOne : serviceAndTimes) {
+            Service iteratedService = serviceDAO.getUniqueServiceByName(theOne.getServiceName());
+            ServiceProviderServices serviceProviderServices = new ServiceProviderServices(iteratedService, serviceProvider, theOne.getFrom(), theOne.getTo());
             serviceProviderServicesDao.create(serviceProviderServices);
         }
-
         transaction.commit();
         HibernateFactory.close(session);
     }
