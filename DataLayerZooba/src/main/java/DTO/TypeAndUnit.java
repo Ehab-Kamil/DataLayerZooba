@@ -24,8 +24,8 @@ public class TypeAndUnit implements Serializable {
     public void setIndex(int index) {
         this.index = index;
     }
-
-
+    
+    
 
     public String getTypeName() {
         return typeName;
