@@ -22,13 +22,13 @@ public class CarFeaturesDao extends AbstractDao<CarFeatures> {
     Session session;
 
     public CarFeaturesDao(Session s) {
-        super(CarFeatures.class,s);
+        super(CarFeatures.class, s);
         session = s;
     }
 
     public CarFeatures getCarFeaturesByName(String name) {
-       
-        Criteria crt = session.createCriteria(CarFeatures.class).add(Restrictions.eq("name", name ));
+
+        Criteria crt = session.createCriteria(CarFeatures.class).add(Restrictions.eq("name", name));
         CarFeatures result = (CarFeatures) crt.uniqueResult();
 
         return result;
@@ -59,7 +59,16 @@ public class CarFeaturesDao extends AbstractDao<CarFeatures> {
 
     @Override
     public void create(CarFeatures t) {
-        super.create(t); //To change body of generated methods, choose Tools | Templates.
+        CarFeatures carFeature = getUniqueFeatureByName(t.getName());
+        if (carFeature == null) {
+            super.create(t); //To change body of generated methods, choose Tools | Templates.
+        }
+    }
+
+    private CarFeatures getUniqueFeatureByName(String name) {
+        Criteria crt = session.createCriteria(CarFeatures.class).add(Restrictions.eq("name", name));
+        CarFeatures carFeatures = (CarFeatures) crt.uniqueResult();
+        return carFeatures;
     }
 
 }

@@ -59,7 +59,7 @@ public class Type  implements java.io.Serializable {
         this.id = id;
     }
 
-@ManyToOne(fetch=FetchType.LAZY)
+@ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="measuring_unit_id", nullable=false)
     public MeasuringUnit getMeasuringUnit() {
         return this.measuringUnit;
