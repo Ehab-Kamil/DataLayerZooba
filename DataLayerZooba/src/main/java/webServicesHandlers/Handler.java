@@ -461,4 +461,33 @@ if(list.size()>0)
      List<Vehicle> list=vd.findByExample(v);
      return list.size()>0;
     }
+
+    public boolean updateUserPassword(String email, String password) {
+   session=HibernateFactory.openSession();
+   UserDao userDao=new UserDao(session);
+   User u=new User();
+   u.setEmail(email);
+   List<User> list=userDao.findByExample(u);
+           if(list.size()>0)
+           {   
+              User u1=list.get(0);
+           u1.setPassword(password);
+           session.getTransaction().begin();
+           userDao.create(u1);
+            session.getTransaction().commit();
+            HibernateFactory.close(session);
+           return true;
+           }
+           return false;
+    }
+
+    public User getUserByMail(String email) {
+      session=HibernateFactory.openSession();
+      uDao=new UserDao(session);
+      User u=new User();
+      u.setEmail(email);
+      u=uDao.getUser(u);
+      HibernateFactory.close(session);
+      return u;
+    }
 }
