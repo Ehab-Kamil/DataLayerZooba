@@ -526,10 +526,10 @@ public class DataLayer implements Serializable {
         MakeDao makeDao = new MakeDao(session);
 
         transaction = session.beginTransaction();
-        yearDao.saveOrUpdate(v.getYear());
-        trimDao.saveOrUpdate(v.getTrim());
-        modelDao.saveOrUpdate(v.getModel());
-        makeDao.saveOrUpdate(v.getModel().getMake());
+        yearDao.create(v.getYear());
+        trimDao.create(v.getTrim());
+        modelDao.create(v.getModel());
+        makeDao.create(v.getModel().getMake());
         vehicleModelDao.saveOrUpdate(v);
         transaction.commit();
         HibernateFactory.close(session);

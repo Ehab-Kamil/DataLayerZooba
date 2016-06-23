@@ -470,11 +470,12 @@ if(list.size()>0)
    List<User> list=userDao.findByExample(u);
            if(list.size()>0)
            {   
-              User u1=list.get(0);
-           u1.setPassword(password);
+              u=list.get(0);
+           u.setPassword(password);
            session.getTransaction().begin();
-           userDao.create(u1);
+           userDao.create(u);
             session.getTransaction().commit();
+            session.flush();
             HibernateFactory.close(session);
            return true;
            }
