@@ -469,13 +469,25 @@ if(list.size()>0)
    u.setEmail(email);
    List<User> list=userDao.findByExample(u);
            if(list.size()>0)
-           {  u=list.get(0);
-           u.setPassword(password);
+           {   
+              User u1=list.get(0);
+           u1.setPassword(password);
            session.getTransaction().begin();
-           userDao.saveOrUpdate(u);
+           userDao.create(u1);
             session.getTransaction().commit();
+            HibernateFactory.close(session);
            return true;
            }
            return false;
+    }
+
+    public User getUserByMail(String email) {
+      session=HibernateFactory.openSession();
+      uDao=new UserDao(session);
+      User u=new User();
+      u.setEmail(email);
+      u=uDao.getUser(u);
+      HibernateFactory.close(session);
+      return u;
     }
 }
